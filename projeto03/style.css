@@ -16,7 +16,6 @@ body::before {
   content: '';
   width: 100%;
   height: 368px;
-
   position: absolute;
   top: 0;
   left: 0;
@@ -30,8 +29,7 @@ body::before {
 }
 
 header {
-  width: 319px;
-  
+  width: 319px;  
   margin-top: 74px;
 }
 
@@ -55,9 +53,7 @@ form {
   background: #FAFAFC;
   border-radius: 8px 8px 0 0;
   min-height: 300px;
-
   padding: 64px;
-
   display: flex;
   flex-direction: column;
   gap: 48px;
@@ -79,7 +75,6 @@ fieldset legend {
   font-size: 24px;
   line-height: 34px;
   color: #32264D;
-
   width: 100%;
   border-bottom: 1px solid #E6E6F0;
   padding-bottom: 16px;
@@ -108,15 +103,12 @@ fieldset legend {
   color: #6c6a71;
 }
 
-
-
 .input-wrapper input, .input-wrapper textarea, .input-wrapper select {
   background: #FAFAFC;
   border: 1px solid #E6E6F0;
   border-radius: 8px;
   height: 56px;
   padding: 0 24px;
-
   font-size: 16px;
   line-height: 26px;
   color: #6c6a71;
@@ -126,7 +118,6 @@ fieldset legend {
   padding: 0;
   height: 168px;
 }
-
 
 .input-wrapper select {
   appearance: none;
@@ -140,7 +131,7 @@ fieldset legend {
   display: flex;
   gap: 20px;
 }
-
+ 
 .col-3 > div:nth-child(1) {
   width: 100%;
 }
@@ -153,7 +144,6 @@ fieldset legend {
   display: flex;
   align-items: center;
   gap: 16px;
-
   margin: 0;
 }
 
@@ -163,7 +153,6 @@ fieldset legend {
   left: 0;
   width: 24px;
   height: 24px;
-
   opacity: 0;
 }
 
@@ -186,17 +175,12 @@ fieldset legend {
 footer {
   background: #F0F0F4;
   height: 136px;
-
   display: flex;
   flex-direction: column;
-
   padding: 40px 64px;
-
   margin-bottom: 100px;
-
   border-top: 1px solid #D6D6D6;
   border-radius: 0 0 8px 8px;
-
 }
 
 footer .button {
@@ -205,11 +189,9 @@ footer .button {
   border-radius: 8px;
   border: 0;
   font-family: 'Archivo';
-
   font-weight: 600;
   font-size: 16px;
   line-height: 26px;
-
   color: #FFFFFF;
 }
 
