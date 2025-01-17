@@ -2,8 +2,7 @@ import { RiShutDownLine } from "react-icons/ri";
 import { Container, Logout, Profile } from "./styles";
 
 const user = {
-  name: "John Doe",
-  avatar: "/adhmattheus", // or provide a mock avatar URL
+  name: "Mattheus"
 };
 
 export function Header() {
