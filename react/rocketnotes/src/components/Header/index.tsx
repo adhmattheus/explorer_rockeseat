@@ -2,13 +2,13 @@ import { RiShutDownLine } from "react-icons/ri";
 import { Container, Logout, Profile } from "./styles";
 
 const user = {
-  name: "Mattheus"
+  name: "Mattheus",
 };
 
 export function Header() {
   return (
     <Container>
-      <Profile>
+      <Profile to="/profile">
         <img src="https://github.com/adhmattheus.png" alt="user" />
         <div>
           <span>Welcome</span>
