@@ -1,8 +1,8 @@
-import { FiMail, FiLock, FiUser } from "react-icons/fi";
-import { Container, Form, Background } from "./styles";
-import { Input } from "../../components/Input";
-import { Button } from "../../components/Button";
+import { FiLock, FiMail, FiUser } from "react-icons/fi";
 import { Link } from "react-router-dom";
+import { Button } from "../../components/Button";
+import { Input } from "../../components/Input";
+import { Background, Container, Form } from "./styles";
 
 export function SignUp() {
   return (
