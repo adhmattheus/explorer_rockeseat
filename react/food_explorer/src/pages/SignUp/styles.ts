@@ -40,10 +40,19 @@ export const Form = styled.form`
 
   > span {
     font-size: 3rem;
+    margin-bottom: 3rem;
   }
 
   > a {
     margin-top: 3rem;
     color: ${({ theme }) => theme.COLORS.WHITE};
   }
+`;
+
+export const InputContent = styled.div`
+  width: 100%;
+  display: grid;
+  gap: 1rem;
+  text-align: left;
+  color: ${({ theme }) => theme.COLORS.GRAY_100};
 `;

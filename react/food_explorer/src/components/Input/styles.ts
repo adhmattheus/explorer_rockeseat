@@ -25,7 +25,6 @@ export const Field = styled.div`
   padding: 1.2rem 1.4rem;
   border-radius: 8px;
   background-color: ${({ theme }) => theme.COLORS.BACKGROUND_800};
-  border: 1px solid ${({ theme }) => theme.COLORS.white};
 
   > input {
     width: 100%;
