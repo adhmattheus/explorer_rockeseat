@@ -2,7 +2,7 @@ import styled from "styled-components";
 
 export const Container = styled.header`
   grid-area: header;
-  padding: 2.4rem 5.6rem;
+  padding: 3rem 12rem;
   align-items: center;
   min-height: 10rem;
   gap: 3rem;
