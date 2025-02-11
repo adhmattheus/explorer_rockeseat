@@ -6,6 +6,12 @@ export const Container = styled.div`
   display: flex;
   align-items: stretch;
   padding: 0 12rem;
+
+  @media (max-width: 768px) {
+    flex-direction: column;
+    padding: 2rem;
+    justify-content: center;
+  }
 `;
 
 export const Logo = styled.div`
@@ -13,6 +19,17 @@ export const Logo = styled.div`
   align-items: center;
   width: 55%;
   margin-bottom: 14rem;
+
+  @media (max-width: 768px) {
+    width: 100%;
+    margin-top: 12rem;
+    justify-content: center;
+    margin-bottom: 0;
+    img {
+      width: 80%;
+      margin-top: 2rem;
+    }
+  }
 `;
 
 export const Content = styled.div`
@@ -23,6 +40,12 @@ export const Content = styled.div`
   text-align: center;
   border-radius: 8px;
   flex: 1;
+
+  @media (max-width: 768px) {
+    width: 100%;
+    padding: 4rem 2rem;
+    background-color: transparent;
+  }
 `;
 
 export const Form = styled.form`
@@ -41,11 +64,19 @@ export const Form = styled.form`
   > span {
     font-size: 3rem;
     margin-bottom: 3rem;
+
+    @media (max-width: 768px) {
+      display: none;
+    }
   }
 
   > a {
     margin-top: 3rem;
     color: ${({ theme }) => theme.COLORS.WHITE};
+  }
+
+  @media (max-width: 768px) {
+    padding: 2rem;
   }
 `;
 
