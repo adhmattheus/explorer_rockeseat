@@ -1,5 +1,6 @@
 export default {
   COLORS: {
+    BACKGROUND_950: "#00070A",
     BACKGROUND_900: "#000A0F" /*É a cor de fundo geral da página*/,
     BACKGROUND_800: "#0D1D25" /*É a cor de fundo dos inputs*/,
     BACKGROUND_700: "#750310" /*É a cor de fundo dos botões*/,

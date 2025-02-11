@@ -4,9 +4,10 @@ export const Container = styled.div`
   display: flex;
   flex-direction: column;
 `;
+
 export const Content = styled.div`
   font-family: ${({ theme }) => theme.FONT.FONT_POPPINS};
-  margin: 12rem;
+  margin: 12rem 12rem 4rem 12rem;
   display: flex;
   align-items: center;
   justify-content: flex-end;
@@ -45,5 +46,21 @@ export const Content = styled.div`
       font-size: 1.5rem;
       opacity: 0.8;
     }
+  }
+`;
+
+export const SwipperContainer = styled.div`
+  display: flex;
+  flex-direction: column;
+  margin: 0 12rem;
+  font-family: ${({ theme }) => theme.FONT.FONT_POPPINS};
+
+  > span {
+    font-size: 4rem;
+    margin-bottom: 2rem;
+  }
+
+  > span:not(:first-child) {
+    margin-top: 4rem;
   }
 `;

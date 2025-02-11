@@ -2,7 +2,7 @@ import styled from "styled-components";
 
 export const Container = styled.footer`
   grid-area: footer;
-
+  margin-top: 8rem;
   height: 7.7rem;
   width: 100%;
   padding: 2.9rem 2.8rem;
@@ -11,7 +11,7 @@ export const Container = styled.footer`
   justify-content: space-between;
   gap: 0.8rem;
 
-  background-color: ${({ theme }) => theme.COLORS.BACKGROUND_300};
+  background: ${({ theme }) => theme.COLORS.BACKGROUND_600};
 
   @media (min-width: 1024px) {
     padding: 2.4rem 12.3rem;
