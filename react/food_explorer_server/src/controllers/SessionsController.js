@@ -26,7 +26,18 @@ class SessionsController {
       expiresIn,
     });
 
-    return response.json({ user, token });
+    // Remove password from user object
+    delete user.password;
+
+    // Set token in HttpOnly cookie
+    response.cookie("token", token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "Strict",
+      maxAge: 1000 * 60 * 60 * 24, 
+    });
+
+    return response.json({ user });
   }
 }
 

@@ -2,11 +2,14 @@ require("express-async-errors");
 require("dotenv/config");
 
 const migrationsRun = require("./database/sqlite/migrations");
-const AppError = require ("./utils/AppError");
+const AppError = require("./utils/AppError");
 const uploadConfig = require("./configs/upload");
 
 const cors = require("cors");
-const express = require ("express");     //aqui estou importando para usar tudo que esá na pasta node_modules
+const express = require("express");
+const cookieParser = require("cookie-parser");
+const ensureAuthenticated = require("./middlewares/ensureAuthenticated");
+const knex = require("./database/knex");
 const routes = require("./routes");
 
 const swaggerUi = require("swagger-ui-express");
@@ -30,32 +33,53 @@ const swaggerOptions = {
         bearerAuth: {
           type: "http",
           scheme: "bearer",
-          bearerFormat: "JWT", // Define o formato do token
+          bearerFormat: "JWT",
         },
       },
     },
     security: [
       {
-        bearerAuth: [], // Aplica o esquema de segurança globalmente
+        bearerAuth: [],
       },
     ],
   },
-  apis: ["./src/routes/*.js"], // Caminho para os arquivos de rotas
+  apis: ["./src/routes/*.js"],
 };
 
 const swaggerDocs = swaggerJsDoc(swaggerOptions);
 
 migrationsRun();
 
-const app = express();                   //para iniciar o express 
-app.use(cors());
-app.use(express.json());                 // para receber as informçãoes atraves do corpo da requisição usando json
+const app = express();
+app.use(cors({
+  origin: "http://localhost:5173", // Replace with your frontend's URL
+  credentials: true, // Allow cookies to be sent with requests
+}));
+app.use(express.json());
+app.use(cookieParser());
 
 app.use("/files", express.static(uploadConfig.UPLOADS_FOLDER));
-
 app.use(routes);
 
 app.use("/food-explorer-api-v1/docs", swaggerUi.serve, swaggerUi.setup(swaggerDocs));
+
+app.get("/me", ensureAuthenticated, async (request, response) => {
+  const user = await knex("users")
+    .select("id", "name", "email", "is_admin", "created_at", "updated_at")
+    .where({ id: request.user.id })
+    .first();
+
+  if (!user) {
+    return response.status(404).json({ message: "Usuário não encontrado" });
+  }
+
+  return response.json({ user });
+});
+
+app.post("/logout", (request, response) => {
+  response.clearCookie("token");
+  return response.status(200).json({ message: "Logout realizado com sucesso" });
+});
 
 app.use((error, request, response, next) => {
   if (error instanceof AppError) {
@@ -73,6 +97,5 @@ app.use((error, request, response, next) => {
   });
 });
 
-
-const PORT = process.env.PORT || 3333;                       // Dizemos qual o endereço que ele vai atender as solicitações 
-app.listen(PORT, () => console.log(`Server us running on Port ${PORT}`));
+const PORT = process.env.PORT || 3333;
+app.listen(PORT, () => console.log(`Server is running on Port ${PORT}`));
