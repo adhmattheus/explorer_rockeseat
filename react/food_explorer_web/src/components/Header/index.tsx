@@ -1,12 +1,13 @@
 import { BiSearch } from "react-icons/bi";
 import { FiLogOut } from "react-icons/fi";
-import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../hooks/auth";
 import { Button } from "../Button";
 import { Input } from "../Input";
 import { Container, InputButton, Logo, Logout } from "./styles";
 
 export function Header() {
-  const navigate = useNavigate();
+  const { signOut } = useAuth();
+
   return (
     <Container>
       <Logo>
@@ -19,7 +20,7 @@ export function Header() {
         <Button isCustomer title="Pedidos" />
       </InputButton>
 
-      <Logout onClick={() => navigate("/")}>
+      <Logout onClick={signOut}>
         <FiLogOut size={"3.2rem"} />
       </Logout>
     </Container>
