@@ -20,7 +20,11 @@ dishesRoutes.use(ensureAuthenticated);
  *     summary: Lista todos os pratos
  *     tags: [Dishes]
  *     security:
- *       - bearerAuth: []
+ *       - bearerAuth: [] # Requires a valid JWT token
+ *     description: |
+ *       Para autenticação, o token JWT é armazenado em um cookie HttpOnly no uso real.
+ *       No entanto, para testar no Swagger, forneça o token no cabeçalho `Authorization` no formato:
+ *       `Bearer <seu-token-jwt>`.
  *     responses:
  *       200:
  *         description: Lista de pratos
@@ -28,7 +32,11 @@ dishesRoutes.use(ensureAuthenticated);
  *     summary: Cria um novo prato
  *     tags: [Dishes]
  *     security:
- *       - bearerAuth: []
+ *       - bearerAuth: [] # Requires a valid JWT token
+ *     description: |
+ *       Para autenticação, o token JWT é armazenado em um cookie HttpOnly no uso real.
+ *       No entanto, para testar no Swagger, forneça o token no cabeçalho `Authorization` no formato:
+ *       `Bearer <seu-token-jwt>`.
  *     requestBody:
  *       required: true
  *       content:
@@ -54,6 +62,12 @@ dishesRoutes.use(ensureAuthenticated);
  *     responses:
  *       201:
  *         description: Prato criado com sucesso
+ *       401:
+ *         description: Usuário não autenticado
+ *       403:
+ *         description: Ação não autorizada (apenas administradores)
+ *       500:
+ *         description: Erro interno do servidor
  * /dishes/{id}:
  *   get:
  *     summary: Exibe detalhes de um prato

@@ -33,17 +33,17 @@ const swaggerOptions = {
         bearerAuth: {
           type: "http",
           scheme: "bearer",
-          bearerFormat: "JWT",
+          bearerFormat: "JWT", // Define o formato do token
         },
       },
     },
     security: [
       {
-        bearerAuth: [],
+        bearerAuth: [], // Aplica o esquema de segurança globalmente
       },
     ],
   },
-  apis: ["./src/routes/*.js"],
+  apis: ["./src/routes/*.js"], // Caminho para os arquivos de rotas
 };
 
 const swaggerDocs = swaggerJsDoc(swaggerOptions);

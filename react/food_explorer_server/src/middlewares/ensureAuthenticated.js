@@ -1,8 +1,9 @@
 const { verify } = require("jsonwebtoken");
 const AppError = require("../utils/AppError");
 const authConfig = require("../configs/auth");
+const knex = require("../database/knex");
 
-function ensureAuthenticated(request, response, next) {
+async function ensureAuthenticated(request, response, next) {
   const token = request.cookies?.token;
 
   if (!token) {
@@ -12,12 +13,21 @@ function ensureAuthenticated(request, response, next) {
   try {
     const { sub: user_id } = verify(token, authConfig.jwt.secret);
 
+    // Fetch user from the database
+    const user = await knex("users").where({ id: Number(user_id) }).first();
+
+    if (!user) {
+      throw new AppError("Usuário não encontrado", 401);
+    }
+    console.log(request.user);
+    // Populate request.user with id and is_admin
     request.user = {
-      id: Number(user_id),
+      id: user.id,
+      is_admin: user.is_admin,
     };
 
     return next();
-  } catch {
+  } catch (error) {
     throw new AppError("JWT Token inválido", 401);
   }
 }

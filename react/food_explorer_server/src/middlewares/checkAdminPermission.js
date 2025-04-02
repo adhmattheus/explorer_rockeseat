@@ -1,12 +1,9 @@
-const knex = require("../database/knex");
 const AppError = require("../utils/AppError");
 
 async function checkAdminPermission(request, response, next) {
-  const user_id = request.user.id;
+  const { is_admin } = request.user;
 
-  const user = await knex("users").where({ id: user_id }).first();
-
-  if (!user.is_admin) {
+  if (!is_admin) {
     throw new AppError(
       "Apenas usuários administradores podem realizar esta ação.",
       403

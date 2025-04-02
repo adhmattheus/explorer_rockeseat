@@ -14,6 +14,7 @@ class SessionsController {
       throw new AppError("E-mail e/ou senha incorretos", 401);
     }
 
+    console.log("Cookies:", request.cookies); // Corrected logging
     const passwordMatched = await compare(password, user.password);
 
     if (!passwordMatched) {
@@ -34,7 +35,7 @@ class SessionsController {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: "Strict",
-      maxAge: 1000 * 60 * 60 * 24, 
+      maxAge: 1000 * 60 * 60 * 24,
     });
 
     return response.json({ user });
