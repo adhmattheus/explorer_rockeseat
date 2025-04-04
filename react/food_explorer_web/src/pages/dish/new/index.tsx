@@ -12,19 +12,33 @@ import { Input } from "../../../components/Input";
 import Item from "../../../components/Item";
 import { Section } from "../../../components/Section";
 import { Textarea } from "../../../components/TextArea";
+import { useDishes } from "../../../hooks/useDishes";
 import { Category, Container, Form, Image } from "./styles";
 
-const ImageUpload = () => (
+const ImageUpload = ({
+  image,
+  setImage,
+}: {
+  image: File | null;
+  setImage: (file: File | null) => void;
+}) => (
   <Section title="Imagem do prato">
     <Image className="image">
       <label htmlFor="image">
         <FiUpload size={"2.4rem"} />
-        <span>{"Selecione imagem"}</span>
-        <input id="image" type="file" />
+        <span>{image ? image.name : "Selecione imagem"}</span>
+        <input
+          id="image"
+          type="file"
+          accept="image/*"
+          onChange={(e) => setImage(e.target.files?.[0] ?? null)}
+        />
       </label>
     </Image>
   </Section>
 );
+
+
 
 const NameInput = ({ name, setName }: { name: string; setName: (name: string) => void }) => (
   <Section title="Nome">
@@ -42,8 +56,8 @@ const CategorySelect = ({ category, setCategory }: { category: string; setCatego
   <Section title="Categoria">
     <Category className="category">
       <label htmlFor="category">
-        <select 
-          id="category" 
+        <select
+          id="category"
           value={category}
           onChange={e => setCategory(e.target.value)}
         >
@@ -77,6 +91,12 @@ export function NewDish() {
   const [name, setName] = useState("");
   const [category, setCategory] = useState("");
 
+
+  const { createDish, creating } = useDishes();
+  const [image, setImage] = useState<File | null>(null);
+
+
+
   function handleBack() {
     navigate(-1);
   }
@@ -90,17 +110,32 @@ export function NewDish() {
     setTags((prevState) => prevState.filter((tag) => tag !== deleted));
   }
 
-  function handleSubmit(e: React.FormEvent) {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    const newDish: NewDish = {
-      tags,
-      price,
-      description,
+
+    if (!image) {
+      alert("Selecione uma imagem.");
+      return;
+    }
+
+    const newDish = {
       name,
+      description,
       category,
+      price: parseFloat(price),
+      image,
+      ingredients: tags,
     };
-    console.log(newDish);
-  }
+
+    try {
+      await createDish(newDish);
+      alert("Prato criado com sucesso!");
+      navigate("/home");
+    } catch (e) {
+      alert("Erro ao criar prato.");
+    }
+  };
+
 
   return (
     <>
@@ -116,7 +151,7 @@ export function NewDish() {
               <h1>Adicionar prato</h1>
             </header>
             <div>
-              <ImageUpload />
+              <ImageUpload image={image} setImage={setImage} />
               <NameInput name={name} setName={setName} />
               <CategorySelect category={category} setCategory={setCategory} />
             </div>
@@ -164,8 +199,9 @@ export function NewDish() {
               <Button
                 title="Salvar alterações"
                 type="submit"
-                loading={loading}
+                loading={creating}
               />
+
             </div>
           </Form>
         </main>

@@ -16,27 +16,121 @@ dishesRoutes.use(ensureAuthenticated);
 /**
  * @swagger
  * /dishes:
- *   get:
- *     summary: Lista todos os pratos
- *     tags: [Dishes]
- *     security:
- *       - bearerAuth: [] # Requires a valid JWT token
- *     description: |
- *       Para autenticação, o token JWT é armazenado em um cookie HttpOnly no uso real.
- *       No entanto, para testar no Swagger, forneça o token no cabeçalho `Authorization` no formato:
- *       `Bearer <seu-token-jwt>`.
- *     responses:
- *       200:
- *         description: Lista de pratos
  *   post:
  *     summary: Cria um novo prato
  *     tags: [Dishes]
  *     security:
  *       - bearerAuth: [] # Requires a valid JWT token
- *     description: |
- *       Para autenticação, o token JWT é armazenado em um cookie HttpOnly no uso real.
- *       No entanto, para testar no Swagger, forneça o token no cabeçalho `Authorization` no formato:
- *       `Bearer <seu-token-jwt>`.
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         multipart/form-data:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               name:
+ *                 type: string
+ *                 example: "Spaguetti Gambe"
+ *               description:
+ *                 type: string
+ *                 example: "Massa fresca com camarões e pesto"
+ *               category:
+ *                 type: string
+ *                 example: "meals"
+ *               price:
+ *                 type: number
+ *                 example: 78.96
+ *               image:
+ *                 type: string
+ *                 format: binary
+ *               ingredients:
+ *                 type: string
+ *                 description: Ingredientes do prato, separados por vírgula.
+ *                 example: "Massa fresca, Camarões, Pesto"
+ *     responses:
+ *       201:
+ *         description: Prato criado com sucesso
+ * 
+ *   get:
+ *     summary: Lista todos os pratos com seus ingredientes
+ *     tags: [Dishes]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: query
+ *         name: search
+ *         schema:
+ *           type: string
+ *         description: Termo de busca para filtrar pratos pelo nome, descrição ou ingredientes
+ *     responses:
+ *       200:
+ *         description: Lista de pratos
+ */
+dishesRoutes.get("/", dishesController.index);
+
+dishesRoutes.post("/", checkAdminPermission, upload.single("image"), dishesController.create);
+
+/**
+ * @swagger
+ * /dishes/{id}:
+ *   get:
+ *     summary: Obtém detalhes de um prato pelo ID
+ *     tags: [Dishes]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: ID do prato
+ *     responses:
+ *       200:
+ *         description: Dados do prato
+ *       404:
+ *         description: Prato não encontrado
+ */
+dishesRoutes.get("/:id", dishesController.show);
+
+/**
+ * @swagger
+ * /dishes/{id}:
+ *   delete:
+ *     summary: Exclui um prato pelo ID
+ *     tags: [Dishes]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: ID do prato a ser excluído
+ *     responses:
+ *       204:
+ *         description: Prato excluído com sucesso
+ *       404:
+ *         description: Prato não encontrado
+ */
+dishesRoutes.delete("/:id", checkAdminPermission, dishesController.delete);
+
+/**
+ * @swagger
+ * /dishes/{id}:
+ *   patch:
+ *     summary: Atualiza um prato pelo ID
+ *     tags: [Dishes]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: ID do prato a ser atualizado
  *     requestBody:
  *       required: true
  *       content:
@@ -56,52 +150,15 @@ dishesRoutes.use(ensureAuthenticated);
  *                 type: string
  *                 format: binary
  *               ingredients:
- *                 type: array
- *                 items:
- *                   type: string
- *     responses:
- *       201:
- *         description: Prato criado com sucesso
- *       401:
- *         description: Usuário não autenticado
- *       403:
- *         description: Ação não autorizada (apenas administradores)
- *       500:
- *         description: Erro interno do servidor
- * /dishes/{id}:
- *   get:
- *     summary: Exibe detalhes de um prato
- *     tags: [Dishes]
- *     security:
- *       - bearerAuth: []
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         schema:
- *           type: integer
+ *                 type: string
+ *                 description: Ingredientes do prato, separados por vírgula.
+ *                 example: "Massa fresca, Camarões, Pesto"
  *     responses:
  *       200:
- *         description: Detalhes do prato
- *   delete:
- *     summary: Exclui um prato
- *     tags: [Dishes]
- *     security:
- *       - bearerAuth: []
- *     parameters:
- *       - in: path
- *         name: id
- *         required: true
- *         schema:
- *           type: integer
- *     responses:
- *       200:
- *         description: Prato excluído com sucesso
+ *         description: Prato atualizado com sucesso
+ *       404:
+ *         description: Prato não encontrado
  */
-dishesRoutes.get("/", dishesController.index);
-dishesRoutes.post("/", checkAdminPermission, upload.single("image"), dishesController.create);
-dishesRoutes.get("/:id", dishesController.show);
-dishesRoutes.delete("/:id", checkAdminPermission, dishesController.delete);
 dishesRoutes.patch("/:id", checkAdminPermission, upload.single("image"), dishesController.update);
 
 module.exports = dishesRoutes;

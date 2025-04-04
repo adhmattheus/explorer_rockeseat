@@ -4,8 +4,11 @@ const authConfig = require("../configs/auth");
 const knex = require("../database/knex");
 
 async function ensureAuthenticated(request, _response, next) {
-  const token = request.headers['authorization']?.split('Bearer ')?.[1];
+  const authHeader = request.headers['authorization'];
+  const tokenFromHeader = authHeader?.startsWith('Bearer ') ? authHeader.split(' ')[1] : null;
+  const tokenFromCookie = request.cookies?.token;
 
+  const token = tokenFromHeader || tokenFromCookie;
 
   if (!token) {
     throw new AppError("JWT Token não informado", 401);
@@ -13,16 +16,12 @@ async function ensureAuthenticated(request, _response, next) {
 
   try {
     const { sub: user_id } = verify(token, authConfig.jwt.secret);
-
-    console.log(user_id);
-    // Fetch user from the database
     const user = await knex("users").where({ id: user_id }).first();
-
 
     if (!user) {
       throw new AppError("Usuário não encontrado", 401);
     }
-    // Populate request.user with id and is_admin
+
     request.user = {
       id: user.id,
       is_admin: user.is_admin,
@@ -30,7 +29,7 @@ async function ensureAuthenticated(request, _response, next) {
 
     next();
   } catch (error) {
-    console.error(error);
+    console.error("Erro ao verificar JWT:", error);
     throw new AppError("JWT Token inválido", 401);
   }
 }

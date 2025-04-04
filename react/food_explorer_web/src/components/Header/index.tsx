@@ -1,12 +1,24 @@
 import { BiSearch } from "react-icons/bi";
 import { FiLogOut } from "react-icons/fi";
+import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../hooks/auth";
 import { Button } from "../Button";
 import { Input } from "../Input";
 import { Container, InputButton, Logo, Logout } from "./styles";
 
 export function Header() {
-  const { signOut } = useAuth();
+  const { signOut, user } = useAuth(); 
+  const navigate = useNavigate(); 
+
+  function handleButtonClick() {
+    console.log(user?.is_admin)
+    if (user?.is_admin) {
+      alert('ok')
+      navigate("/new"); // Navega para a página de criação de pratos
+    } else {
+      navigate("/home"); // Navega para a página inicial (ou outra página para clientes)
+    }
+  }
 
   return (
     <Container>
@@ -17,7 +29,11 @@ export function Header() {
       <Input icon={BiSearch} placeholder="Busque por pratos ou ingredientes" />
 
       <InputButton>
-        <Button isCustomer title="Pedidos" />
+        <Button
+          title={user?.is_admin ? "Novo prato" : "Pedidos"}
+          isCustomer={!user?.is_admin}
+          onClick={handleButtonClick} 
+        />
       </InputButton>
 
       <Logout onClick={signOut}>
