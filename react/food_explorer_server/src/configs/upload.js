@@ -17,8 +17,11 @@ const MULTER = {
   }),
 };
 
+const APP_URL = process.env.APP_URL || "http://localhost:3333";
+
 module.exports = {
   TMP_FOLDER,
   UPLOADS_FOLDER,
   MULTER,
+  APP_URL, // Adicionado para reutilizar a URL base
 };

@@ -30,7 +30,7 @@ export default function Home() {
         ) : (
           <Swiper
             loop={true}
-            slidesPerView={4}
+            slidesPerView={3}
             spaceBetween={20}
             pagination={{ clickable: true }}
             navigation
@@ -43,7 +43,9 @@ export default function Home() {
                   <FoodItem
                     name={item.name}
                     description={item.description}
-                    price={item.price.toString()}
+                    price={`R$ ${item.price.toLocaleString("pt-BR", {
+                      minimumFractionDigits: 2,
+                    })}`}
                     image={item.image}
                   />
                 </SwiperSlide>
@@ -54,20 +56,22 @@ export default function Home() {
         <span>Sobremesas</span>
         <Swiper
           loop={true}
-          slidesPerView={4}
+          slidesPerView={3}
           spaceBetween={20}
           pagination={{ clickable: true }}
           navigation
           modules={[Navigation, Pagination]}
         >
           {dishes
-            .filter((dish) => dish.category === "desserts")
+            .filter((dish) => dish.category === "dessert")
             .map((item) => (
               <SwiperSlide key={item.id}>
                 <FoodItem
                   name={item.name}
                   description={item.description}
-                  price={item.price.toString()}
+                  price={`R$ ${item.price.toLocaleString("pt-BR", {
+                    minimumFractionDigits: 2,
+                  })}`}
                   image={item.image}
                 />
               </SwiperSlide>
@@ -77,20 +81,22 @@ export default function Home() {
         <span>Bebidas</span>
         <Swiper
           loop={true}
-          slidesPerView={4}
+          slidesPerView={3}
           spaceBetween={20}
           pagination={{ clickable: true }}
           navigation
           modules={[Navigation, Pagination]}
         >
           {dishes
-            .filter((dish) => dish.category === "drinks")
+            .filter((dish) => dish.category === "beverage")
             .map((item) => (
               <SwiperSlide key={item.id}>
                 <FoodItem
                   name={item.name}
                   description={item.description}
-                  price={item.price.toString()}
+                  price={`R$ ${item.price.toLocaleString("pt-BR", {
+                    minimumFractionDigits: 2,
+                  })}`}
                   image={item.image}
                 />
               </SwiperSlide>

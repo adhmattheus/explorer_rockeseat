@@ -13,7 +13,6 @@ export function Header() {
   function handleButtonClick() {
     console.log(user?.is_admin)
     if (user?.is_admin) {
-      alert('ok')
       navigate("/new"); // Navega para a página de criação de pratos
     } else {
       navigate("/home"); // Navega para a página inicial (ou outra página para clientes)

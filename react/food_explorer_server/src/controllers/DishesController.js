@@ -1,6 +1,7 @@
 const knex = require("../database/knex");
 const DiskStorage = require("../providers/DiskStorage");
 const AppError = require("../utils/AppError");
+const uploadConfig = require("../configs/upload");
 
 class DishesController {
   async create(request, response) {
@@ -164,8 +165,17 @@ class DishesController {
         ingredients: dishIngredients,
       };
     });
-
-    return response.json(dishesWithIngredients);
+    const updatedDishes = dishesWithIngredients.map((dish) => {
+      return {
+        ...dish,
+        image: dish.image
+          ? `${uploadConfig.APP_URL}/files/${dish.image}`
+          : null,
+      };
+    });
+    
+    return response.json(updatedDishes);
+    
   }
 }
 
