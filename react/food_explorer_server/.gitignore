@@ -1,5 +1,6 @@
 node_modules
 
 .env
-
+tmp/uploads/
 npm install -> para restaurar o arquivo node_modules 
+database

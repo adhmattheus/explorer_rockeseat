@@ -9,9 +9,10 @@ interface FoodItemProps {
   description: string;
   price: string;
   image: string;
+  onClick?: () => void;
 }
 
-export function FoodItem({ name, description, price, image }: FoodItemProps) {
+export function FoodItem({ name, description, price, image, onClick }: FoodItemProps) {
   const [number, setNumber] = useState(1);
   const incrementNumber = () => {
     setNumber(number + 1);
@@ -26,7 +27,13 @@ export function FoodItem({ name, description, price, image }: FoodItemProps) {
   return (
     <Container>
       <FiHeart size={"2.4rem"} />
-      <img src={image} alt={`Imagem do ${name}`} />
+      <img
+        src={image}
+        alt={`Imagem do ${name}`}
+        onClick={() => {
+          if (onClick) onClick();
+        }}
+      />
       <Title>
         <h2>{name}</h2>
         <RxCaretRight />

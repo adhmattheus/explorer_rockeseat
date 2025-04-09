@@ -1,6 +1,7 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FiMinus, FiPlus } from "react-icons/fi";
 import { RxCaretLeft } from "react-icons/rx";
+import { useNavigate, useParams } from "react-router-dom";
 import { Button } from "../../../components/Button";
 import { ButtonText } from "../../../components/ButtonText";
 import { NumberContainer } from "../../../components/FoodItem/styles";
@@ -8,24 +9,27 @@ import { Footer } from "../../../components/Footer";
 import { Header } from "../../../components/Header";
 import { InputButton } from "../../../components/Header/styles";
 import { Tag } from "../../../components/Tag";
+import { Dish, DishesService } from "../../../services/dishesService";
 import { Container, Content } from "./styles";
 
 export function Detail() {
-  const data = {
-    id: 1,
-    name: "Salada Caesar",
-    description: "Salada fresca com alface, croutons e molho Caesar.",
-    price: 10.2,
-    image: "Mask group-1.png",
-    ingredients: [
-      { id: 1, name: "espinafre" },
-      { id: 2, name: "alface" },
-      { id: 3, name: "croutons" },
-      { id: 4, name: "molho Caesar" },
-    ],
-  };
-
+  const { id } = useParams<{ id: string }>();
+  const navigate = useNavigate();
+  const [data, setData] = useState<Dish | null>(null);
   const [number, setNumber] = useState(1);
+
+  useEffect(() => {
+    async function fetchDish() {
+      try {
+        const dish = await DishesService.getDishById(Number(id));
+        setData(dish);
+      } catch (error) {
+        console.error("Erro ao carregar prato:", error);
+      }
+    }
+    fetchDish();
+  }, [id]);
+
   const incrementNumber = () => {
     setNumber(number + 1);
   };
@@ -36,24 +40,25 @@ export function Detail() {
     }
   };
 
+  if (!data) {
+    return <p>Carregando...</p>;
+  }
+
   return (
     <Container>
       <Header />
-
       <main>
         <div>
-          <ButtonText>
+          <ButtonText onClick={() => navigate("/home")}>
             <RxCaretLeft />
             voltar
           </ButtonText>
 
           <Content>
-            <img src={`../../../src/assets/${data.image}`} alt={data.name} />
-
+            <img src={`http://localhost:3333/files/${data.image}`} alt={data.name} />
             <div>
               <h1>{data.name}</h1>
               <p>{data.description}</p>
-
               {data.ingredients && (
                 <section>
                   {data.ingredients.map((ingredient) => (
@@ -61,7 +66,6 @@ export function Detail() {
                   ))}
                 </section>
               )}
-
               <div className="buttons">
                 <NumberContainer>
                   <button onClick={decrementNumber}>
@@ -87,7 +91,6 @@ export function Detail() {
           </Content>
         </div>
       </main>
-
       <Footer />
     </Container>
   );

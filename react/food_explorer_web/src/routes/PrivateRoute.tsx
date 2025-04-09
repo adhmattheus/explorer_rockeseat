@@ -8,5 +8,7 @@ export function PrivateRoute() {
     return null;
   }
 
-  return isUserAuthenticated() ? <Outlet /> : <Navigate to="/" />;
+  const isAuthenticated = isUserAuthenticated();
+
+  return isAuthenticated ? <Outlet /> : <Navigate to="/" />;
 }

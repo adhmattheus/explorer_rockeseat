@@ -1,4 +1,4 @@
-  import { Navigate, Route, Routes } from "react-router-dom";
+import { Navigate, Route, Routes } from "react-router-dom";
 import { PrivateRoute } from "./PrivateRoute";
 
   import { Detail } from "../pages/dish/detail";
@@ -14,7 +14,7 @@ import { SignUp } from "../pages/sign-up";
         <Route path="/register" element={<SignUp />} />
         <Route element={<PrivateRoute />}>
           <Route path="/home" element={<Home />} />
-          <Route path="/detail" element={<Detail />} />
+          <Route path="/detail/:id" element={<Detail />} />
           <Route path="/new" element={<NewDish />} />
         </Route>
         <Route path="*" element={<Navigate to="/" />} />

@@ -1,3 +1,4 @@
+import { useNavigate } from "react-router-dom";
 import { Navigation, Pagination } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { FoodItem } from "../../components/FoodItem";
@@ -8,6 +9,11 @@ import { Content, SwipperContainer } from "./styles";
 
 export default function Home() {
   const { dishes, loading, error } = useDishes();
+  const navigate = useNavigate();
+
+  const handleDishClick = (id: number) => {
+    navigate(`/detail/${id}`);
+  };
 
   return (
     <div>
@@ -47,6 +53,7 @@ export default function Home() {
                       minimumFractionDigits: 2,
                     })}`}
                     image={item.image}
+                    onClick={() => handleDishClick(item.id!)}
                   />
                 </SwiperSlide>
               ))}
@@ -73,6 +80,7 @@ export default function Home() {
                     minimumFractionDigits: 2,
                   })}`}
                   image={item.image}
+                  onClick={() => handleDishClick(item.id!)}
                 />
               </SwiperSlide>
             ))}
@@ -98,6 +106,7 @@ export default function Home() {
                     minimumFractionDigits: 2,
                   })}`}
                   image={item.image}
+                  onClick={() => handleDishClick(item.id!)}
                 />
               </SwiperSlide>
             ))}

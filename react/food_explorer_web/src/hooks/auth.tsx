@@ -41,12 +41,19 @@ export function AuthProvider({ children }: AuthProviderProps) {
   useEffect(() => {
     async function loadUser() {
       try {
-        const response = await api.get("/me"); // pega usuário do cookie
-        const user = response.data;
-
-        setData({ user, token: null }); // o token continua no cookie
+        const storedUser = localStorage.getItem("user"); // Retrieve user from localStorage
+        if (storedUser) {
+          setData({ user: JSON.parse(storedUser), token: null });
+        } else {
+          const response = await api.get("/me"); // Fetch user from backend
+          const user = response.data;
+          setData({ user, token: null });
+          localStorage.setItem("user", JSON.stringify(user)); // Save user to localStorage
+        }
       } catch (error) {
+        console.error("Error fetching user data:", error); // Debug log
         setData({ user: null, token: null });
+        localStorage.removeItem("user"); // Clear localStorage on error
       } finally {
         setIsLoadingUser(false);
       }
@@ -66,7 +73,8 @@ export function AuthProvider({ children }: AuthProviderProps) {
         throw new Error("Usuário não encontrado na resposta.");
       }
 
-      setData({ user, token: null }); // Token é gerenciado por cookie
+      setData({ user, token: null }); 
+      localStorage.setItem("user", JSON.stringify(user)); 
       navigate("/home");
     } catch (error) {
       if (axios.isAxiosError(error)) {
@@ -82,12 +90,14 @@ export function AuthProvider({ children }: AuthProviderProps) {
   function signOut() {
     api.post("/logout").then(() => {
       setData({ user: null, token: null });
+      localStorage.removeItem("user"); // Clear localStorage on logout
       navigate("/");
     });
   }
 
   function isUserAuthenticated() {
-    return !!data.user;
+    const isAuthenticated = !!data.user;
+    return isAuthenticated;
   }
 
   return (

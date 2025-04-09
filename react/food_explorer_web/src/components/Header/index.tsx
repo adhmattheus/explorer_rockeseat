@@ -11,11 +11,10 @@ export function Header() {
   const navigate = useNavigate(); 
 
   function handleButtonClick() {
-    console.log(user?.is_admin)
     if (user?.is_admin) {
-      navigate("/new"); // Navega para a página de criação de pratos
+      navigate("/new"); // Navigate to the admin page
     } else {
-      navigate("/home"); // Navega para a página inicial (ou outra página para clientes)
+      navigate("/home"); // Navigate to the customer page
     }
   }
 
