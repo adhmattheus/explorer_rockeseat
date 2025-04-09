@@ -4,6 +4,7 @@ import { PrivateRoute } from "./PrivateRoute";
 import { Detail } from "../pages/dish/detail";
 import { NewDish } from "../pages/dish/new";
 import Home from "../pages/home";
+import { Orders } from "../pages/orders";
 import { SignIn } from "../pages/sign-in";
 import { SignUp } from "../pages/sign-up";
 import { Users } from "../pages/users";
@@ -18,6 +19,7 @@ export function AppRoutes() {
         <Route path="/detail/:id" element={<Detail />} />
         <Route path="/new/:id?" element={<NewDish />} />
         <Route path="/users" element={<Users />} />
+        <Route path="/orders" element={<Orders />} />
       </Route>
       <Route path="*" element={<Navigate to="/" />} />
     </Routes>

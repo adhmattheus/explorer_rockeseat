@@ -14,7 +14,7 @@ export function Header() {
     if (user?.is_admin) {
       navigate("/new");
     } else {
-      navigate("/home");
+      navigate("/orders"); 
     }
   }
 
