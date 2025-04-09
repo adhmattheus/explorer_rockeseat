@@ -29,3 +29,10 @@ export const Logout = styled.button`
 export const InputButton = styled.div`
   width: 30rem;
 `;
+
+export const ButtonContainer = styled.div`
+  display: flex;
+  gap: 2rem;
+  align-items: center;
+  justify-content: center;
+`;

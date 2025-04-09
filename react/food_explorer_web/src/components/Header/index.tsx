@@ -4,18 +4,22 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../hooks/auth";
 import { Button } from "../Button";
 import { Input } from "../Input";
-import { Container, InputButton, Logo, Logout } from "./styles";
+import { ButtonContainer, Container, InputButton, Logo, Logout } from "./styles";
 
 export function Header() {
-  const { signOut, user } = useAuth(); 
-  const navigate = useNavigate(); 
+  const { signOut, user } = useAuth();
+  const navigate = useNavigate();
 
   function handleButtonClick() {
     if (user?.is_admin) {
-      navigate("/new"); 
+      navigate("/new");
     } else {
-      navigate("/home");  
+      navigate("/home");
     }
+  }
+
+  function handleUsersClick() {
+    navigate("/users");
   }
 
   return (
@@ -33,13 +37,24 @@ export function Header() {
 
       <Input icon={BiSearch} placeholder="Busque por pratos ou ingredientes" />
 
-      <InputButton>
-        <Button
-          title={user?.is_admin ? "Novo prato" : "Pedidos"}
-          isCustomer={!user?.is_admin}
-          onClick={handleButtonClick} 
-        />
-      </InputButton>
+      <ButtonContainer>
+        <InputButton>
+          <Button
+            title={user?.is_admin ? "Novo prato" : "Pedidos"}
+            isCustomer={!user?.is_admin}
+            onClick={handleButtonClick}
+          />
+        </InputButton>
+
+        {user?.is_admin && (
+          <InputButton>
+            <Button
+              title="Usuários"
+              onClick={handleUsersClick}
+            />
+          </InputButton>
+        )}
+      </ButtonContainer>
 
       <Logout onClick={signOut}>
         <FiLogOut size={"3.2rem"} />
