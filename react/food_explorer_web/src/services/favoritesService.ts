@@ -27,7 +27,7 @@ export class FavoritesService {
 
   static async removeFavorite(dishId: number): Promise<void> {
     try {
-      await api.delete(`/favorites`, { params: { dish_id: dishId } });
+      await api.delete(`/favorites/${dishId}`);
     } catch (error) {
       console.error("Erro ao remover favorito:", error);
       throw error;

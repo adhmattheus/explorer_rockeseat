@@ -37,6 +37,7 @@ favoritesRoutes.use(ensureAuthenticated);
  *     responses:
  *       201:
  *         description: Favorito adicionado com sucesso
+ * /favorites/{dish_id}:
  *   delete:
  *     summary: Remove um prato dos favoritos
  *     tags: [Favorites]
