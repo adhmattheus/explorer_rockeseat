@@ -1,9 +1,8 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { FiUpload } from "react-icons/fi";
 import { RiArrowDownSLine } from "react-icons/ri";
 import { RxCaretLeft } from "react-icons/rx";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { Button } from "../../../components/Button";
 import { ButtonText } from "../../../components/ButtonText";
 import { Footer } from "../../../components/Footer";
@@ -13,31 +12,38 @@ import Item from "../../../components/Item";
 import { Section } from "../../../components/Section";
 import { Textarea } from "../../../components/TextArea";
 import { useDishes } from "../../../hooks/useDishes";
+import { CreateDish, DishesService, Ingredient } from "../../../services/dishesService";
 import { Category, Container, Form, Image } from "./styles";
 
 const ImageUpload = ({
   image,
   setImage,
 }: {
-  image: File | null;
+  image: File | string | null;
   setImage: (file: File | null) => void;
-}) => (
-  <Section title="Imagem do prato">
-    <Image className="image">
-      <label htmlFor="image">
-        <FiUpload size={"2.4rem"} />
-        <span>{image ? image.name : "Selecione imagem"}</span>
-        <input
-          id="image"
-          type="file"
-          accept="image/*"
-          onChange={(e) => setImage(e.target.files?.[0] ?? null)}
-        />
-      </label>
-    </Image>
-  </Section>
-);
+}) => {
+  const isImageUrl = typeof image === "string";
 
+  return (
+    <Section title="Imagem do prato">
+      <Image className="image">
+        <label htmlFor="image">
+          <FiUpload size={"2.4rem"} />
+          <span>{!image ? "Selecione imagem" : (image instanceof File ? image.name : "Imagem carregada")}</span>
+          <input
+            id="image"
+            type="file"
+            accept="image/*"
+            onChange={(e) => setImage(e.target.files?.[0] ?? null)}
+          />
+        </label>
+        {isImageUrl && (
+          <img src={image} alt="Preview do prato" style={{ marginTop: "10px", maxHeight: "150px", objectFit: "contain" }} />
+        )}
+      </Image>
+    </Section>
+  );
+};
 
 
 const NameInput = ({ name, setName }: { name: string; setName: (name: string) => void }) => (
@@ -82,20 +88,48 @@ interface NewDish {
 }
 
 export function NewDish() {
+  const { id } = useParams<{ id: string }>();
   const [tags, setTags] = useState<string[]>([]);
   const [newTag, setNewTag] = useState("");
-  const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
   const [price, setPrice] = useState("");
   const [description, setDescription] = useState("");
   const [name, setName] = useState("");
   const [category, setCategory] = useState("");
 
-
   const { createDish, creating } = useDishes();
-  const [image, setImage] = useState<File | null>(null);
+  const [image, setImage] = useState<File | string | null>(null);
 
+async function convertImageUrlToFile(url: string, fileName: string): Promise<File> {
+  const response = await fetch(url);
+  const blob = await response.blob();
+  const mimeType = blob.type || "image/jpeg"; // ou image/png dependendo do seu caso
+  return new File([blob], fileName, { type: mimeType });
+}
 
+  useEffect(() => {
+    async function fetchDishById() {
+      const BASE_URL = "http://localhost:3333"
+      if (id) {
+        try {
+          const dish = await DishesService.getDishById(Number(id));
+          setName(dish.name);
+          setDescription(dish.description);
+          setCategory(dish.category);
+          setPrice(dish.price.toString());
+          setTags(dish.ingredients?.map((ingredient: Ingredient) => ingredient.name) || []);
+          if (dish.image) {
+            const file = await convertImageUrlToFile(`${BASE_URL}/files/${dish.image}`, dish.image);
+            setImage(file);
+          }
+        } catch (error) {
+          console.error("Erro ao carregar prato:", error);
+        }
+      }
+    }
+    fetchDishById();
+  }, [id]);
+  
 
   function handleBack() {
     navigate(-1);
@@ -112,30 +146,35 @@ export function NewDish() {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-
-    if (!image) {
-      alert("Selecione uma imagem.");
+  
+    if (!image || typeof image === "string") {
+      alert("Selecione uma imagem válida.");
       return;
     }
-
-    const newDish = {
+  
+    const dishData: CreateDish = {
       name,
       description,
       category,
-      price: parseFloat(price),
-      image,
+      price: Number(price),
       ingredients: tags,
+      image,
     };
-
+  
     try {
-      await createDish(newDish);
-      alert("Prato criado com sucesso!");
+      if (id) {
+        await DishesService.updateDish(Number(id), dishData);
+        alert("Prato atualizado com sucesso!");
+      } else {
+        await createDish(dishData);
+        alert("Prato criado com sucesso!");
+      }
       navigate("/home");
     } catch (e) {
-      alert("Erro ao criar prato.");
+      alert("Erro ao salvar prato.");
     }
   };
-
+  
 
   return (
     <>
@@ -197,11 +236,10 @@ export function NewDish() {
 
             <div className="save">
               <Button
-                title="Salvar alterações"
+                title="Confirmar"
                 type="submit"
                 loading={creating}
               />
-
             </div>
           </Form>
         </main>

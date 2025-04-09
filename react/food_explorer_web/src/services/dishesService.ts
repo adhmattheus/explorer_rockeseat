@@ -50,10 +50,10 @@ export class DishesService {
           "Content-Type": "multipart/form-data",
         },
       });
-    } catch (error) {
-      console.error("Erro ao criar prato:", error);
-      throw error;
-    }
+    } catch (e) {
+      console.error("Erro ao salvar prato:", e);
+      alert("Erro ao salvar prato: " + e);
+    }    
   }
 
   static async getDishById(id: number): Promise<Dish> {
@@ -68,15 +68,7 @@ export class DishesService {
 
   static async updateDish(id: number, dish: CreateDish): Promise<void> {
     try {
-      const formData = new FormData();
-      formData.append("name", dish.name);
-      formData.append("description", dish.description);
-      formData.append("category", dish.category);
-      formData.append("price", String(dish.price));
-      formData.append("image", dish.image);
-      formData.append("ingredients", dish.ingredients.join(", "));
-
-      await api.put(`/dishes/${id}`, formData, {
+      await api.patch(`/dishes/${id}`, dish, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
@@ -86,4 +78,5 @@ export class DishesService {
       throw error;
     }
   }
+  
 }

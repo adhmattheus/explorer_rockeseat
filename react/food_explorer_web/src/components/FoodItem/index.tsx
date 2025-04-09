@@ -10,9 +10,10 @@ interface FoodItemProps {
   price: string;
   image: string;
   onClick?: () => void;
+  buttonText?: string; // New prop for button text
 }
 
-export function FoodItem({ name, description, price, image, onClick }: FoodItemProps) {
+export function FoodItem({ name, description, price, image, onClick, buttonText }: FoodItemProps) {
   const [number, setNumber] = useState(1);
   const incrementNumber = () => {
     setNumber(number + 1);
@@ -50,7 +51,8 @@ export function FoodItem({ name, description, price, image, onClick }: FoodItemP
             <FiPlus />
           </button>
         </NumberContainer>
-        <Button title="incluir" />
+        <Button title={buttonText} onClick={onClick} />
+
       </Order>
     </Container>
   );

@@ -15,7 +15,7 @@ import { SignUp } from "../pages/sign-up";
         <Route element={<PrivateRoute />}>
           <Route path="/home" element={<Home />} />
           <Route path="/detail/:id" element={<Detail />} />
-          <Route path="/new" element={<NewDish />} />
+          <Route path="/new/:id?" element={<NewDish />} />
         </Route>
         <Route path="*" element={<Navigate to="/" />} />
       </Routes>

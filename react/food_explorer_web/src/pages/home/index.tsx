@@ -4,16 +4,24 @@ import { Swiper, SwiperSlide } from "swiper/react";
 import { FoodItem } from "../../components/FoodItem";
 import { Footer } from "../../components/Footer";
 import { Header } from "../../components/Header";
+import { useAuth } from "../../hooks/auth";
 import { useDishes } from "../../hooks/useDishes";
 import { Content, SwipperContainer } from "./styles";
 
 export default function Home() {
   const { dishes, loading, error } = useDishes();
+  const { user } = useAuth();
   const navigate = useNavigate();
 
   const handleDishClick = (id: number) => {
-    navigate(`/detail/${id}`);
+    console.log("Clicou em:", id);
+    if (user?.is_admin) {
+      navigate(`/new/${id}`);
+    } else {
+      navigate(`/detail/${id}`);
+    }
   };
+  
 
   return (
     <div>
@@ -53,6 +61,7 @@ export default function Home() {
                       minimumFractionDigits: 2,
                     })}`}
                     image={item.image}
+                    buttonText={!user?.is_admin ? "Incluir" : "Editar prato"}
                     onClick={() => handleDishClick(item.id!)}
                   />
                 </SwiperSlide>
@@ -80,6 +89,7 @@ export default function Home() {
                     minimumFractionDigits: 2,
                   })}`}
                   image={item.image}
+                  buttonText={!user?.is_admin ? "Incluir" : "Editar prato"}
                   onClick={() => handleDishClick(item.id!)}
                 />
               </SwiperSlide>
@@ -106,6 +116,7 @@ export default function Home() {
                     minimumFractionDigits: 2,
                   })}`}
                   image={item.image}
+                  buttonText={!user?.is_admin ? "Incluir" : "Editar prato"}
                   onClick={() => handleDishClick(item.id!)}
                 />
               </SwiperSlide>
