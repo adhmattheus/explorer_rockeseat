@@ -73,9 +73,9 @@ export function FoodItem({
         <FiHeart
           size={"2.4rem"}
           onClick={handleFavoriteClick}
-          color={isFavorite ? "#FF6B6B" : "inherit"} // Softer red color
-          fill={isFavorite ? "#FF6B6B" : "none"} // Softer red color
-          style={{ transition: "color 0.3s, fill 0.3s" }} // Smooth transition
+          color={isFavorite ? "#FF6B6B" : "inherit"}
+          fill={isFavorite ? "#FF6B6B" : "none"}
+          style={{ transition: "color 0.3s, fill 0.3s" }}
         />
       )}
       <img

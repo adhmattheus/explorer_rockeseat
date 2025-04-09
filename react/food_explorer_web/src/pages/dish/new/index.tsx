@@ -3,6 +3,7 @@ import { FiUpload } from "react-icons/fi";
 import { RiArrowDownSLine } from "react-icons/ri";
 import { RxCaretLeft } from "react-icons/rx";
 import { useNavigate, useParams } from "react-router-dom";
+import styled from "styled-components";
 import { Button } from "../../../components/Button";
 import { ButtonText } from "../../../components/ButtonText";
 import { Footer } from "../../../components/Footer";
@@ -78,6 +79,10 @@ const CategorySelect = ({ category, setCategory }: { category: string; setCatego
   </Section>
 );
 
+const DeleteButton = styled(Button)`
+  background-color: #FF6B6B;
+`;
+
 interface NewDish {
   tags: string[];
   price: string;
@@ -100,12 +105,12 @@ export function NewDish() {
   const { createDish, creating } = useDishes();
   const [image, setImage] = useState<File | string | null>(null);
 
-async function convertImageUrlToFile(url: string, fileName: string): Promise<File> {
-  const response = await fetch(url);
-  const blob = await response.blob();
-  const mimeType = blob.type || "image/jpeg"; // ou image/png dependendo do seu caso
-  return new File([blob], fileName, { type: mimeType });
-}
+  async function convertImageUrlToFile(url: string, fileName: string): Promise<File> {
+    const response = await fetch(url);
+    const blob = await response.blob();
+    const mimeType = blob.type || "image/jpeg"; // ou image/png dependendo do seu caso
+    return new File([blob], fileName, { type: mimeType });
+  }
 
   useEffect(() => {
     async function fetchDishById() {
@@ -129,7 +134,7 @@ async function convertImageUrlToFile(url: string, fileName: string): Promise<Fil
     }
     fetchDishById();
   }, [id]);
-  
+
 
   function handleBack() {
     navigate(-1);
@@ -146,12 +151,12 @@ async function convertImageUrlToFile(url: string, fileName: string): Promise<Fil
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-  
+
     if (!image || typeof image === "string") {
       alert("Selecione uma imagem válida.");
       return;
     }
-  
+
     const dishData: CreateDish = {
       name,
       description,
@@ -160,7 +165,7 @@ async function convertImageUrlToFile(url: string, fileName: string): Promise<Fil
       ingredients: tags,
       image,
     };
-  
+
     try {
       if (id) {
         await DishesService.updateDish(Number(id), dishData);
@@ -174,7 +179,20 @@ async function convertImageUrlToFile(url: string, fileName: string): Promise<Fil
       alert("Erro ao salvar prato.");
     }
   };
-  
+
+  const handleDelete = async () => {
+    if (confirm("Tem certeza que deseja excluir este prato?")) {
+      try {
+        if (id) {
+          await DishesService.deleteDish(Number(id));
+          alert("Prato excluído com sucesso!");
+          navigate("/home");
+        }
+      } catch (error) {
+        alert("Erro ao excluir prato.");
+      }
+    }
+  };
 
   return (
     <>
@@ -187,7 +205,7 @@ async function convertImageUrlToFile(url: string, fileName: string): Promise<Fil
                 <RxCaretLeft />
                 voltar
               </ButtonText>
-              <h1>Adicionar prato</h1>
+              <h1>{id ? "Editar prato" : "Adicionar prato"}</h1>
             </header>
             <div>
               <ImageUpload image={image} setImage={setImage} />
@@ -235,6 +253,13 @@ async function convertImageUrlToFile(url: string, fileName: string): Promise<Fil
             </Section>
 
             <div className="save">
+              {id && (
+                <DeleteButton
+                  title="Excluir Prato"
+                  type="button"
+                  onClick={handleDelete}
+                />
+              )}
               <Button
                 title="Confirmar"
                 type="submit"

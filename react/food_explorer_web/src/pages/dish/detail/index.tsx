@@ -9,14 +9,17 @@ import { Footer } from "../../../components/Footer";
 import { Header } from "../../../components/Header";
 import { InputButton } from "../../../components/Header/styles";
 import { Tag } from "../../../components/Tag";
+import { useAuth } from "../../../hooks/auth";
 import { Dish, DishesService } from "../../../services/dishesService";
-import { Container, Content } from "./styles";
+import { AdminButtonContainer, Container, Content } from "./styles";
+
 
 export function Detail() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const [data, setData] = useState<Dish | null>(null);
   const [number, setNumber] = useState(1);
+  const { user } = useAuth();
 
   useEffect(() => {
     async function fetchDish() {
@@ -38,6 +41,10 @@ export function Detail() {
     if (number > 1) {
       setNumber(number - 1);
     }
+  };
+
+  const handleEditClick = () => {
+    navigate(`/new/${id}`);
   };
 
   if (!data) {
@@ -67,25 +74,33 @@ export function Detail() {
                 </section>
               )}
               <div className="buttons">
-                <NumberContainer>
-                  <button onClick={decrementNumber}>
-                    <FiMinus />
-                  </button>
-                  <span>{number < 10 ? `0${number}` : number}</span>
-                  <button onClick={incrementNumber}>
-                    <FiPlus />
-                  </button>
-                </NumberContainer>
-                <InputButton>
-                  <Button
-                    title={`incluir ∙ R$ ${(data.price * number).toLocaleString(
-                      "pt-BR",
-                      {
-                        minimumFractionDigits: 2,
-                      }
-                    )}`}
-                  />
-                </InputButton>
+                {user?.is_admin ? (
+                  <AdminButtonContainer>
+                    <Button title="Editar Prato" onClick={handleEditClick} />
+                  </AdminButtonContainer>
+                ) : (
+                  <NumberContainer>
+                    <button onClick={decrementNumber}>
+                      <FiMinus />
+                    </button>
+                    <span>{number < 10 ? `0${number}` : number}</span>
+                    <button onClick={incrementNumber}>
+                      <FiPlus />
+                    </button>
+                  </NumberContainer>
+                )}
+                {!user?.is_admin && (
+                  <InputButton>
+                    <Button
+                      title={`incluir ∙ R$ ${(data.price * number).toLocaleString(
+                        "pt-BR",
+                        {
+                          minimumFractionDigits: 2,
+                        }
+                      )}`}
+                    />
+                  </InputButton>
+                )}
               </div>
             </div>
           </Content>

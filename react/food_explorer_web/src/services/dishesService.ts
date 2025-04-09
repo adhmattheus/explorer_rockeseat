@@ -79,4 +79,12 @@ export class DishesService {
     }
   }
   
+  static async deleteDish(id: number): Promise<void> {
+    try {
+      await api.delete(`/dishes/${id}`);
+    } catch (error) {
+      console.error("Erro ao excluir prato:", error);
+      throw error;
+    }
+  }
 }

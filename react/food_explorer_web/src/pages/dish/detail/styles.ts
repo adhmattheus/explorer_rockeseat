@@ -31,6 +31,8 @@ export const Container = styled.div`
     }
   }
 
+
+
   @media (min-width: 375px) {
     .buttons {
       div svg, 
@@ -82,6 +84,16 @@ export const Container = styled.div`
       line-height: 2.4rem;
     }
   }
+`;
+
+export const AdminButtonContainer = styled.div`
+display: flex;
+justify-content: flex-start;
+width: 100%;
+
+> button {
+  max-width: 20rem;
+}
 `;
 
 export const Content = styled.div`
