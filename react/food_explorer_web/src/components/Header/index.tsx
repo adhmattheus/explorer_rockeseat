@@ -12,16 +12,23 @@ export function Header() {
 
   function handleButtonClick() {
     if (user?.is_admin) {
-      navigate("/new"); // Navigate to the admin page
+      navigate("/new"); 
     } else {
-      navigate("/home"); // Navigate to the customer page
+      navigate("/home");  
     }
   }
 
   return (
     <Container>
-      <Logo>
-        <img src="../../../src/assets/logo_header.png" alt="Logo" />
+      <Logo onClick={() => navigate("/home")}>
+        <img
+          src={
+            user?.is_admin
+              ? "../../../src/assets/logo_header_adm.png"
+              : "../../../src/assets/logo_header.png"
+          }
+          alt="Logo"
+        />
       </Logo>
 
       <Input icon={BiSearch} placeholder="Busque por pratos ou ingredientes" />

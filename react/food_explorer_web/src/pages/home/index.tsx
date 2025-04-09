@@ -14,14 +14,12 @@ export default function Home() {
   const navigate = useNavigate();
 
   const handleDishClick = (id: number) => {
-    console.log("Clicou em:", id);
-    if (user?.is_admin) {
-      navigate(`/new/${id}`);
-    } else {
-      navigate(`/detail/${id}`);
-    }
+    navigate(`/detail/${id}`);
   };
-  
+
+  const handleEditClick = (id: number) => {
+    navigate(`/new/${id}`);
+  };
 
   return (
     <div>
@@ -43,7 +41,7 @@ export default function Home() {
           <p>{error}</p>
         ) : (
           <Swiper
-            loop={true}
+            loop={dishes.filter((dish) => dish.category === "meal").length > 3}
             slidesPerView={3}
             spaceBetween={20}
             pagination={{ clickable: true }}
@@ -55,14 +53,16 @@ export default function Home() {
               .map((item) => (
                 <SwiperSlide key={item.id}>
                   <FoodItem
+                    id={item.id!}
                     name={item.name}
                     description={item.description}
                     price={`R$ ${item.price.toLocaleString("pt-BR", {
                       minimumFractionDigits: 2,
                     })}`}
                     image={item.image}
-                    buttonText={!user?.is_admin ? "Incluir" : "Editar prato"}
-                    onClick={() => handleDishClick(item.id!)}
+                    isAdmin={!!user?.is_admin}
+                    onEditClick={handleEditClick}
+                    onViewClick={handleDishClick}
                   />
                 </SwiperSlide>
               ))}
@@ -71,7 +71,7 @@ export default function Home() {
 
         <span>Sobremesas</span>
         <Swiper
-          loop={true}
+          loop={dishes.filter((dish) => dish.category === "dessert").length > 3}
           slidesPerView={3}
           spaceBetween={20}
           pagination={{ clickable: true }}
@@ -83,14 +83,16 @@ export default function Home() {
             .map((item) => (
               <SwiperSlide key={item.id}>
                 <FoodItem
+                  id={item.id!}
                   name={item.name}
                   description={item.description}
                   price={`R$ ${item.price.toLocaleString("pt-BR", {
                     minimumFractionDigits: 2,
                   })}`}
                   image={item.image}
-                  buttonText={!user?.is_admin ? "Incluir" : "Editar prato"}
-                  onClick={() => handleDishClick(item.id!)}
+                  isAdmin={!!user?.is_admin}
+                  onEditClick={handleEditClick}
+                  onViewClick={handleDishClick}
                 />
               </SwiperSlide>
             ))}
@@ -98,7 +100,7 @@ export default function Home() {
 
         <span>Bebidas</span>
         <Swiper
-          loop={true}
+          loop={dishes.filter((dish) => dish.category === "beverage").length > 3}
           slidesPerView={3}
           spaceBetween={20}
           pagination={{ clickable: true }}
@@ -110,14 +112,16 @@ export default function Home() {
             .map((item) => (
               <SwiperSlide key={item.id}>
                 <FoodItem
+                  id={item.id!}
                   name={item.name}
                   description={item.description}
                   price={`R$ ${item.price.toLocaleString("pt-BR", {
                     minimumFractionDigits: 2,
                   })}`}
                   image={item.image}
-                  buttonText={!user?.is_admin ? "Incluir" : "Editar prato"}
-                  onClick={() => handleDishClick(item.id!)}
+                  isAdmin={!!user?.is_admin}
+                  onEditClick={handleEditClick}
+                  onViewClick={handleDishClick}
                 />
               </SwiperSlide>
             ))}
