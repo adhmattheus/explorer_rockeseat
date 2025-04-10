@@ -1,4 +1,7 @@
 import { useEffect, useState } from "react";
+import { RxCaretLeft } from "react-icons/rx";
+import { useNavigate } from "react-router-dom";
+import { ButtonText } from "../../components/ButtonText";
 import { Footer } from "../../components/Footer";
 import { Header } from "../../components/Header";
 import { User, UsersService } from "../../services/usersService";
@@ -8,7 +11,8 @@ export function Users() {
   const [users, setUsers] = useState<User[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-
+  const navigate = useNavigate();
+  
   useEffect(() => {
     async function fetchUsers() {
       try {
@@ -26,7 +30,12 @@ export function Users() {
   return (
     <Container>
       <Header />
+
       <main>
+        <ButtonText onClick={() => navigate("/home")}>
+          <RxCaretLeft />
+          voltar
+        </ButtonText>
         <h1>Lista de Usuários</h1>
         {loading ? (
           <p>Carregando...</p>

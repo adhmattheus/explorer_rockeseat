@@ -14,6 +14,9 @@ export const Container = styled.header`
 export const Logo = styled.div`
   display: flex;
   align-items: center;
+  &:hover {
+    cursor: pointer;
+  }
 `;
 
 export const Logout = styled.button`
@@ -27,13 +30,13 @@ export const Logout = styled.button`
 `;
 
 export const InputButton = styled.div`
-  width: 30rem;
+  width: 15rem;
 `;
 
 export const ButtonContainer = styled.div`
   display: flex;
   align-items: center;
-  gap: 1rem;
+  gap: 1rem;  
 `;
 
 export const CartIcon = styled.div`

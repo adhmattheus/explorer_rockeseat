@@ -2,6 +2,7 @@ import { api } from "./api";
 
 export interface OrderItem {
   dish_id: number;
+  name?: string; // Optional for admin view
   quantity: number;
 }
 
@@ -10,7 +11,9 @@ export interface Order {
   status: string;
   price: number;
   payment_method: string;
-  order_items: OrderItem[];
+  created_at: string;
+  created_by?: string; // Only for admin view
+  dishes: OrderItem[];
 }
 
 export class OrdersService {

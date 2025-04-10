@@ -18,43 +18,58 @@ export const Container = styled.div`
 export const BackButton = styled.button`
   display: flex;
   align-items: center;
-  margin-bottom: 1rem;
+  gap: 0.5rem;
   background: none;
   border: none;
+  color: ${({ theme }) => theme.COLORS.WHITE};
   font-size: 1.6rem;
-  color: ${({ theme }) => theme.COLORS.GRAY_100};
   cursor: pointer;
 
-  svg {
-    margin-right: 0.5rem;
-  }
-
   &:hover {
-    color: ${({ theme }) => theme.COLORS.WHITE};
+    text-decoration: underline;
   }
 `;
 
 export const OrderList = styled.div`
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
   gap: 1.5rem;
+
+  @media (min-width: 1024px) {
+    grid-template-columns: repeat(4, 1fr);
+  }
 `;
 
 export const OrderItem = styled.div`
   padding: 1.5rem;
   border: 1px solid ${({ theme }) => theme.COLORS.GRAY_300};
   border-radius: 0.5rem;
+  background-color: ${({ theme }) => theme.COLORS.BACKGROUND_800};
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
 
   p {
     margin: 0.5rem 0;
   }
 
+  strong {
+    font-size: 1.6rem;
+    color: ${({ theme }) => theme.COLORS.WHITE};
+  }
+
+  &:hover {
+    transform: scale(1.02); /* Slight zoom effect */
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.15); /* Subtle shadow */
+  }
+
   ul {
-    margin-top: 0.5rem;
-    padding-left: 1.5rem;
+    margin-top: 1rem;
+    list-style: none;
+    padding: 0;
 
     li {
       margin-bottom: 0.5rem;
+      font-size: 1.4rem;
+      color: ${({ theme }) => theme.COLORS.GRAY_100};
     }
   }
 `;

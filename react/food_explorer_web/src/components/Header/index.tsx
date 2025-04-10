@@ -82,10 +82,19 @@ export function Header() {
       <ButtonContainer>
         <InputButton>
           <Button
-            title={user?.is_admin ? "Novo prato" : "Pedidos"}
-            onClick={handleButtonClick}
+            title="Pedidos"
+            onClick={() => navigate("/orders")}
           />
         </InputButton>
+
+        {user?.is_admin ? (
+          <InputButton>
+            <Button
+              title="Novo prato"
+              onClick={() => navigate("/new")}
+            />
+          </InputButton>
+        ) : null}
 
         {user?.is_admin ? (
           <InputButton>

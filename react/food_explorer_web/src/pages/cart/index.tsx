@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react";
 import { RiArrowDownSLine } from "react-icons/ri";
+import { useNavigate } from "react-router-dom";
 import { Footer } from "../../components/Footer";
 import { Header } from "../../components/Header";
 import { useAuth } from "../../hooks/auth";
 import { CartsService } from "../../services/cartsService";
 import { DishesService } from "../../services/dishesService";
+import { OrdersService } from "../../services/ordersService";
 import { Category } from "../dish/new/styles";
 import { CartItem, CartList, ConfirmButton, Container, PaymentContainer, QuantityControls, RemoveButton, SaveCartButton, TotalPriceContainer } from "./styles";
 
@@ -20,9 +22,10 @@ export function Cart() {
   const [cartItems, setCartItems] = useState<CartItemDetails[]>([]);
   const [totalPrice, setTotalPrice] = useState(0);
   const [paymentMethod, setPaymentMethod] = useState("");
-  const [activeCartId, setActiveCartId] = useState<number | null>(null); 
+  const [activeCartId, setActiveCartId] = useState<number | null>(null);
   const { user } = useAuth();
-  
+  const navigate = useNavigate();
+
   function formatPrice(value: number): string {
     return value.toLocaleString("pt-BR", {
       style: "currency",
@@ -51,7 +54,7 @@ export function Cart() {
           ? { ...item, quantity: item.quantity - 1, total: (item.quantity - 1) * item.price }
           : item
       )
-      .filter((item) => item.quantity > 0); // Remove items with quantity 0
+      .filter((item) => item.quantity > 0);
     setCartItems(updatedItems);
     updateTotalPrice(updatedItems);
   }
@@ -104,11 +107,54 @@ export function Cart() {
     }
   }
 
+  async function handleConfirmOrder() {
+    if (!cartItems.length) {
+      alert("O carrinho está vazio. Adicione itens antes de confirmar o pedido.");
+      return;
+    }
+
+    if (!paymentMethod) {
+      alert("Selecione um método de pagamento.");
+      return;
+    }
+
+    try {
+      const orderItems = cartItems.map(({ id, quantity }) => ({
+        dish_id: id,
+        quantity,
+      }));
+
+      const orderData = {
+        status: "open",
+        price: totalPrice,
+        payment_method: paymentMethod,
+        order_items: orderItems,
+      };
+
+      await OrdersService.createOrder(orderData);
+
+      if (activeCartId) {
+        await CartsService.deleteCart(activeCartId); // Delete the user's cart
+      }
+
+      alert("Pedido confirmado com sucesso!");
+      setCartItems([]);
+      setTotalPrice(0);
+      setPaymentMethod("");
+      window.dispatchEvent(new Event("cartUpdated"));
+
+      navigate("/home"); // Navigate back to the home page
+    } catch (error) {
+      console.error("Erro ao confirmar pedido:", error);
+      alert("Erro ao confirmar pedido.");
+    }
+  }
+
   useEffect(() => {
     async function fetchCart() {
       try {
         const carts = await CartsService.listCarts();
-        const activeCart = carts.find(cart => cart.created_by === user?.id); 
+        const activeCart = carts.find(cart => cart.created_by === user?.id);
 
         if (activeCart) {
           setActiveCartId(activeCart.id); // Set active cart ID
@@ -143,52 +189,63 @@ export function Cart() {
       <Header />
       <main>
         <h1>Meu Carrinho</h1>
-        <CartList>
-          {cartItems.map((item) => (
-            <CartItem key={item.id}>
-              <p><strong>{item.name}</strong></p>
-              <QuantityControls>
-                <p>Quantidade:</p>
-                <span>{item.quantity}</span>
-                <button onClick={() => handleDecreaseQuantity(item.id)}>-</button>
-                <button onClick={() => handleIncreaseQuantity(item.id)}>+</button>
-              </QuantityControls>
-              <p>Preço unitário: {formatPrice(item.price)}</p>
-              <p>Total: {formatPrice(item.total)}</p>
-              <RemoveButton onClick={() => handleRemoveItem(item.id)}>Excluir</RemoveButton>
-            </CartItem>
-          ))}
-        </CartList>
-        <TotalPriceContainer>
-          <h2>Total do Carrinho: {formatPrice(totalPrice)}</h2>
-          <SaveCartButton onClick={handleSaveCart}>
-            Salvar Carrinho
-          </SaveCartButton>
-        </TotalPriceContainer>
-        
-        <PaymentContainer>
-          <Category className="payment-method">
-            <label htmlFor="payment-method">
-              <select
-                id="payment-method"
-                value={paymentMethod}
-                onChange={e => setPaymentMethod(e.target.value)}
+        {cartItems.length > 0 ? (
+          <>
+            <CartList>
+              {cartItems.map((item) => (
+                <CartItem key={item.id}>
+                  <p><strong>{item.name}</strong></p>
+                  <QuantityControls>
+                    <p>Quantidade:</p>
+                    <span>{item.quantity}</span>
+                    <button onClick={() => handleDecreaseQuantity(item.id)}>-</button>
+                    <button onClick={() => handleIncreaseQuantity(item.id)}>+</button>
+                  </QuantityControls>
+                  <p>Preço unitário: {formatPrice(item.price)}</p>
+                  <p>Total: {formatPrice(item.total)}</p>
+                  <RemoveButton onClick={() => handleRemoveItem(item.id)}>Excluir</RemoveButton>
+                </CartItem>
+              ))}
+            </CartList>
+            <TotalPriceContainer>
+              <h2>Total do Carrinho: {formatPrice(totalPrice)}</h2>
+              <SaveCartButton
+                onClick={handleSaveCart}
+                disabled={!cartItems.length}
               >
-                <option value="">Selecione o método de pagamento</option>
-                <option value="pix">PIX</option>
-                <option value="credit_card">Cartão de Crédito</option>
-                <option value="cash">Dinheiro</option>
-              </select>
-              <RiArrowDownSLine size={"2.4rem"} />
-            </label>
-          </Category>
-          <ConfirmButton
-            disabled={!paymentMethod}
-            onClick={() => alert("Pedido confirmado!")}
-          >
-            <strong>Confirmar pedido</strong>
-          </ConfirmButton>
-        </PaymentContainer>
+                Salvar Carrinho
+              </SaveCartButton>
+            </TotalPriceContainer>
+
+            <PaymentContainer>
+              <Category className="payment-method">
+                <label htmlFor="payment-method">
+                  <select
+                    id="payment-method"
+                    value={paymentMethod}
+                    onChange={e => setPaymentMethod(e.target.value)}
+                  >
+                    <option value="">Selecione o método de pagamento</option>
+                    <option value="pix">PIX</option>
+                    <option value="credit_card">Cartão de Crédito</option>
+                    <option value="cash">Dinheiro</option>
+                  </select>
+                  <RiArrowDownSLine size={"2.4rem"} />
+                </label>
+              </Category>
+              <ConfirmButton
+                disabled={!paymentMethod || !cartItems.length}
+                onClick={handleConfirmOrder}
+              >
+                <strong>Confirmar pedido</strong>
+              </ConfirmButton>
+            </PaymentContainer>
+          </>
+        ) : (
+          <h2 style={{ textAlign: "center", marginTop: "2rem", color: "#fff" }}>
+            Carrinho vazio
+          </h2>
+        )}
       </main>
       <Footer />
     </Container>
