@@ -103,6 +103,36 @@ ordersRoutes.use(ensureAuthenticated);
  *     responses:
  *       200:
  *         description: Status do pedido atualizado com sucesso
+ * /orders/{id}/status:
+ *   patch:
+ *     summary: Atualiza o status de um pedido
+ *     tags: [Orders]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: ID do pedido
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               status:
+ *                 type: string
+ *                 description: Novo status do pedido (valores válidos: "open", "done")
+ *     responses:
+ *       200:
+ *         description: Status do pedido atualizado com sucesso
+ *       400:
+ *         description: Status inválido
+ *       404:
+ *         description: Pedido não encontrado
  */
 ordersRoutes.get("/", ordersController.index);
 ordersRoutes.post("/", ordersController.create);

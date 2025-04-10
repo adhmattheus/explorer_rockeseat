@@ -72,6 +72,7 @@ cartsRoutes.use(ensureAuthenticated);
  *         required: true
  *         schema:
  *           type: integer
+ *         description: ID do carrinho
  *     requestBody:
  *       required: true
  *       content:
@@ -86,13 +87,18 @@ cartsRoutes.use(ensureAuthenticated);
  *                   properties:
  *                     dish_id:
  *                       type: integer
+ *                       description: ID do prato
  *                     name:
  *                       type: string
+ *                       description: Nome do prato
  *                     quantity:
  *                       type: integer
+ *                       description: Quantidade do prato
  *     responses:
  *       200:
  *         description: Carrinho atualizado com sucesso
+ *       404:
+ *         description: Carrinho não encontrado
  *   delete:
  *     summary: Exclui um carrinho
  *     tags: [Carts]

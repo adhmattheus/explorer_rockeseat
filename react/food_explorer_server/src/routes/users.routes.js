@@ -67,10 +67,10 @@ const usersController = new UsersController()
  *                     type: string
  *                     format: date-time
  *   put:
- *     summary: Atualiza um usuário autenticado
+ *     summary: Atualiza o perfil do usuário autenticado
  *     tags: [Users]
  *     security:
- *       - bearerAuth: []  # Aplica o esquema de segurança
+ *       - bearerAuth: []  # Requer um token JWT válido
  *     requestBody:
  *       required: true
  *       content:
@@ -95,9 +95,13 @@ const usersController = new UsersController()
  *                 description: Define se o usuário é administrador (apenas administradores podem alterar este campo)
  *     responses:
  *       200:
- *         description: Usuário atualizado com sucesso
+ *         description: Perfil do usuário atualizado com sucesso
  *       400:
  *         description: Erro na requisição
+ *       403:
+ *         description: Permissão negada para alterar o campo 'is_admin'
+ *       404:
+ *         description: Usuário não encontrado
  */
 usersRoutes.post("/", usersController.create);
 usersRoutes.get("/", ensureAuthenticated, usersController.index);

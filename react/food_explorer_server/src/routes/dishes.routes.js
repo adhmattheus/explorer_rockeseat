@@ -140,19 +140,23 @@ dishesRoutes.delete("/:id", checkAdminPermission, dishesController.delete);
  *             properties:
  *               name:
  *                 type: string
+ *                 description: Nome do prato
  *               description:
  *                 type: string
+ *                 description: Descrição do prato
  *               category:
  *                 type: string
+ *                 description: Categoria do prato
  *               price:
  *                 type: number
+ *                 description: Preço do prato
  *               image:
  *                 type: string
  *                 format: binary
+ *                 description: Imagem do prato
  *               ingredients:
  *                 type: string
- *                 description: Ingredientes do prato, separados por vírgula.
- *                 example: "Massa fresca, Camarões, Pesto"
+ *                 description: Ingredientes do prato, separados por vírgula
  *     responses:
  *       200:
  *         description: Prato atualizado com sucesso
