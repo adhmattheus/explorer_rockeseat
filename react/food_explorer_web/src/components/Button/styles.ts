@@ -24,7 +24,7 @@ export const Container = styled.button`
   > span {
     position: absolute;
     top: -0.4rem;
-    right: -0.6rem;
+    /* right: -0.6rem; */
 
     background-color: ${({ theme }) => theme.COLORS.BACKGROUND_700};
     border-radius: 99px;

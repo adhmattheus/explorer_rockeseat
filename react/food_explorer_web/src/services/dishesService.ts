@@ -61,7 +61,7 @@ export class DishesService {
       const response = await api.get<Dish>(`/dishes/${id}`);
       return response.data;
     } catch (error) {
-      console.error("Erro ao buscar prato:", error);
+      console.error("Erro ao buscar detalhes do prato:", error);
       throw error;
     }
   }

@@ -21,7 +21,7 @@ cartsRoutes.use(ensureAuthenticated);
  *       200:
  *         description: Lista de carrinhos
  *   post:
- *     summary: Cria um novo carrinho
+ *     summary: Adiciona ou atualiza itens no carrinho do usuário
  *     tags: [Carts]
  *     security:
  *       - bearerAuth: []
@@ -45,7 +45,7 @@ cartsRoutes.use(ensureAuthenticated);
  *                       type: integer
  *     responses:
  *       201:
- *         description: Carrinho criado com sucesso
+ *         description: Itens adicionados ou atualizados no carrinho com sucesso
  * /carts/{id}:
  *   get:
  *     summary: Exibe detalhes de um carrinho
@@ -80,6 +80,5 @@ cartsRoutes.get("/", cartsController.index);
 cartsRoutes.post("/", cartsController.create);
 cartsRoutes.get("/:id", cartsController.show);
 cartsRoutes.delete("/:id", cartsController.delete);
-cartsRoutes.patch("/:id", cartsController.update);
 
 module.exports = cartsRoutes;

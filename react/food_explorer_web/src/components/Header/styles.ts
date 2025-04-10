@@ -32,7 +32,23 @@ export const InputButton = styled.div`
 
 export const ButtonContainer = styled.div`
   display: flex;
-  gap: 2rem;
   align-items: center;
-  justify-content: center;
+  gap: 1rem;
+`;
+
+export const CartIcon = styled.div`
+  position: relative;
+  cursor: pointer;
+
+  > span {
+    position: absolute;
+    top: -0.5rem;
+    right: -1.2rem;
+    background-color: ${({ theme }) => theme.COLORS.RED};
+    color: ${({ theme }) => theme.COLORS.WHITE};
+    font-size: 1.2rem;
+    font-weight: bold;
+    border-radius: 50%;
+    padding: 0.2rem 0.6rem;
+  }
 `;

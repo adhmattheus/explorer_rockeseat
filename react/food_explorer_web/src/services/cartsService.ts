@@ -8,23 +8,16 @@ export interface CartItem {
 
 export interface Cart {
   id: number;
-  cart_items: CartItem[];
+  created_at: string;
+  cart_items?: CartItem[];
+  created_by: string;
 }
 
 export class CartsService {
-  static async getCarts(): Promise<Cart[]> {
+  static async createCart(cartItems: CartItem[]): Promise<number> {
     try {
-      const response = await api.get<Cart[]>("/carts");
-      return response.data;
-    } catch (error) {
-      console.error("Erro ao buscar carrinhos:", error);
-      throw error;
-    }
-  }
-
-  static async createCart(cartItems: CartItem[]): Promise<void> {
-    try {
-      await api.post("/carts", { cart_items: cartItems });
+      const response = await api.post<{ id: number }>("/carts", { cart_items: cartItems });
+      return response.data.id;
     } catch (error) {
       console.error("Erro ao criar carrinho:", error);
       throw error;
@@ -36,7 +29,17 @@ export class CartsService {
       const response = await api.get<Cart>(`/carts/${id}`);
       return response.data;
     } catch (error) {
-      console.error("Erro ao buscar detalhes do carrinho:", error);
+      console.error("Erro ao buscar carrinho:", error);
+      throw error;
+    }
+  }
+
+  static async listCarts(): Promise<Cart[]> {
+    try {
+      const response = await api.get<Cart[]>("/carts");
+      return response.data;
+    } catch (error) {
+      console.error("Erro ao listar carrinhos:", error);
       throw error;
     }
   }

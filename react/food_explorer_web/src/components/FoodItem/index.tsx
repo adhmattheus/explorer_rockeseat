@@ -2,7 +2,9 @@ import { useEffect, useState } from "react";
 import { FiEdit2, FiHeart, FiMinus, FiPlus } from "react-icons/fi";
 import { RxCaretRight } from "react-icons/rx";
 import { Button } from "../../components/Button";
+import { CartsService } from "../../services/cartsService"; // Import CartsService
 import { FavoritesService } from "../../services/favoritesService";
+import { Toaster } from "../Toaster";
 import { Container, NumberContainer, Order, Title } from "./styles";
 
 interface FoodItemProps {
@@ -28,7 +30,7 @@ export function FoodItem({
 }: FoodItemProps) {
   const [number, setNumber] = useState(1);
   const [isFavorite, setIsFavorite] = useState(false);
-
+  const [showToaster, setShowToaster] = useState(false);
   const incrementNumber = () => {
     setNumber(number + 1);
   };
@@ -62,6 +64,27 @@ export function FoodItem({
       }
     } catch (error) {
       console.error("Erro ao atualizar favoritos:", error);
+    }
+  };
+
+  const handleAddToCart = async () => {
+    try {
+      // Use the create method to handle both creating and updating the cart
+      await CartsService.createCart([{ dish_id: id, name, quantity: number }]);
+
+      // Dispatch a custom event to update the cart count in the header
+      window.dispatchEvent(new Event("cartUpdated"));
+
+      // Reset the item quantity to 1
+      setNumber(1);
+
+      setShowToaster(true);
+      setTimeout(() => setShowToaster(false), 3000); // Hide toaster after 3 seconds
+    } catch (error) {
+      console.error("Erro ao adicionar item ao carrinho:", error);
+
+      // Ensure the header updates to show 0 if the cart is empty
+      window.dispatchEvent(new Event("cartUpdated"));
     }
   };
 
@@ -100,9 +123,10 @@ export function FoodItem({
               <FiPlus />
             </button>
           </NumberContainer>
-          <Button title="Incluir" />
+          <Button title="Incluir" onClick={handleAddToCart} /> {/* Add onClick */}
         </Order>
       )}
+      {showToaster && <Toaster message="Item adicionado ao carrinho!" />}
     </Container>
   );
 }
