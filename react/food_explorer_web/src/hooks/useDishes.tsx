@@ -15,10 +15,12 @@ export const useDishes = () => {
     fetchDishes();
   }, []);
 
-  const fetchDishes = async () => {
+  const fetchDishes = async (search: string = "") => {
     setLoading(true);
     try {
-      const data = await DishesService.getDishes();
+      const data = search
+        ? await DishesService.getFilteredDishes(search)
+        : await DishesService.getDishes();
       setDishes(data);
     } catch (error) {
       setError("Erro ao carregar pratos.");
@@ -44,6 +46,7 @@ export const useDishes = () => {
     loading,
     error,
     createDish,
-    creating, 
+    creating,
+    fetchDishes, // Expose fetchDishes
   };
 };

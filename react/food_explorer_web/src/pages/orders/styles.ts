@@ -46,6 +46,8 @@ export const OrderItem = styled.div`
   border-radius: 0.5rem;
   background-color: ${({ theme }) => theme.COLORS.BACKGROUND_800};
   transition: transform 0.2s ease, box-shadow 0.2s ease;
+  display: flex;
+  flex-direction: column;
 
   p {
     margin: 0.5rem 0;
@@ -73,3 +75,26 @@ export const OrderItem = styled.div`
     }
   }
 `;
+
+export const FinalizeButton = styled.button`
+  padding: 0.5rem 1rem;
+  font-size: 1.4rem;
+  background-color: #90ee90;
+  color: ${({ theme }) => theme.COLORS.BLUE_800};
+  border: none;
+  border-radius: 0.5rem;
+  cursor: pointer;
+  transition: background-color 0.2s, transform 0.2s;
+  width: fit-content;
+  margin-top: auto;
+  margin-left: auto; /* Alinha à direita */
+
+  &:hover {
+    background-color: #76c776; 
+  }
+
+  &:active {
+    transform: scale(0.95);
+  }
+`;
+

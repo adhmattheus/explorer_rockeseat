@@ -34,8 +34,7 @@ class OrdersController {
     const order = await knex("orders").where({ id }).first();
     const order_items = await knex("order_items")
       .where({ order_id: id })
-      .orderBy("name");
-
+      .orderBy("created_at", "desc");
     return response.json({
       ...order,
       order_items,
@@ -57,6 +56,26 @@ class OrdersController {
     await knex("orders").where({ id }).update(orderUpdate);
 
     return response.json();
+  }
+
+  async updateStatus(request, response) {
+    const { id } = request.params; // ID da ordem
+    const { status } = request.body; // Novo status
+
+    const validStatuses = ["open", "done"]; // Status válidos atualizados
+    if (!validStatuses.includes(status)) {
+      return response.status(400).json({ message: "Status inválido." });
+    }
+
+    const order = await knex("orders").where({ id }).first();
+
+    if (!order) {
+      return response.status(404).json({ message: "Ordem não encontrada." });
+    }
+
+    await knex("orders").where({ id }).update({ status });
+
+    return response.status(200).json({ message: "Status atualizado com sucesso." });
   }
 
   async delete(request, response) {

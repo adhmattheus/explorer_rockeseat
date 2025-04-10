@@ -87,4 +87,16 @@ export class DishesService {
       throw error;
     }
   }
+
+  static async getFilteredDishes(search: string): Promise<Dish[]> {
+    try {
+      const response = await api.get<Dish[]>("/dishes", {
+        params: { search },
+      });
+      return response.data;
+    } catch (error) {
+      console.error("Erro ao buscar pratos filtrados:", error);
+      throw error;
+    }
+  }
 }

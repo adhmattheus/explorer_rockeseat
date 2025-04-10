@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Navigation, Pagination } from "swiper/modules";
 import { Swiper, SwiperSlide } from "swiper/react";
@@ -9,9 +10,26 @@ import { useDishes } from "../../hooks/useDishes";
 import { Content, SwipperContainer } from "./styles";
 
 export default function Home() {
-  const { dishes, loading, error } = useDishes();
+  const { dishes, loading, error, fetchDishes } = useDishes();
+  const [filteredDishes, setFilteredDishes] = useState(dishes);
   const { user } = useAuth();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    setFilteredDishes(dishes);
+  }, [dishes]);
+
+  useEffect(() => {
+    function handleDishesFiltered(event: CustomEvent) {
+      setFilteredDishes(event.detail);
+    }
+
+    window.addEventListener("dishesFiltered", handleDishesFiltered as EventListener);
+
+    return () => {
+      window.removeEventListener("dishesFiltered", handleDishesFiltered as EventListener);
+    };
+  }, []);
 
   const handleDishClick = (id: number) => {
     navigate(`/detail/${id}`);
@@ -41,14 +59,14 @@ export default function Home() {
           <p>{error}</p>
         ) : (
           <Swiper
-            loop={dishes.filter((dish) => dish.category === "meal").length > 3}
+            loop={filteredDishes.filter((dish) => dish.category === "meal").length > 3}
             slidesPerView={3}
             spaceBetween={20}
             pagination={{ clickable: true }}
             navigation
             modules={[Navigation, Pagination]}
           >
-            {dishes
+            {filteredDishes
               .filter((dish) => dish.category === "meal")
               .map((item) => (
                 <SwiperSlide key={item.id}>
@@ -71,14 +89,14 @@ export default function Home() {
 
         <span>Sobremesas</span>
         <Swiper
-          loop={dishes.filter((dish) => dish.category === "dessert").length > 3}
+          loop={filteredDishes.filter((dish) => dish.category === "dessert").length > 3}
           slidesPerView={3}
           spaceBetween={20}
           pagination={{ clickable: true }}
           navigation
           modules={[Navigation, Pagination]}
         >
-          {dishes
+          {filteredDishes
             .filter((dish) => dish.category === "dessert")
             .map((item) => (
               <SwiperSlide key={item.id}>
@@ -100,14 +118,14 @@ export default function Home() {
 
         <span>Bebidas</span>
         <Swiper
-          loop={dishes.filter((dish) => dish.category === "beverage").length > 3}
+          loop={filteredDishes.filter((dish) => dish.category === "beverage").length > 3}
           slidesPerView={3}
           spaceBetween={20}
           pagination={{ clickable: true }}
           navigation
           modules={[Navigation, Pagination]}
         >
-          {dishes
+          {filteredDishes
             .filter((dish) => dish.category === "beverage")
             .map((item) => (
               <SwiperSlide key={item.id}>

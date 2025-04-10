@@ -80,11 +80,35 @@ ordersRoutes.use(ensureAuthenticated);
  *     responses:
  *       200:
  *         description: Pedido excluído com sucesso
+ *   patch:
+ *     summary: Atualiza o status de um pedido
+ *     tags: [Orders]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               status:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: Status do pedido atualizado com sucesso
  */
 ordersRoutes.get("/", ordersController.index);
 ordersRoutes.post("/", ordersController.create);
 ordersRoutes.get("/:id", ordersController.show);
 ordersRoutes.delete("/:id", checkAdminPermission, ordersController.delete);
 ordersRoutes.patch("/:id", checkAdminPermission, ordersController.update);
+ordersRoutes.patch("/:id/status", checkAdminPermission, ordersController.updateStatus); // Nova rota para atualizar status
 
 module.exports = ordersRoutes;

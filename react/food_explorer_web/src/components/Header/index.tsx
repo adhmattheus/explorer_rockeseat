@@ -5,6 +5,7 @@ import { FiLogOut } from "react-icons/fi";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../hooks/auth";
 import { CartsService } from "../../services/cartsService";
+import { DishesService } from "../../services/dishesService"; // Import DishesService
 import { Button } from "../Button";
 import { Input } from "../Input";
 import { ButtonContainer, CartIcon, Container, InputButton, Logo, Logout } from "./styles";
@@ -13,6 +14,7 @@ export function Header() {
   const { signOut, user } = useAuth();
   const navigate = useNavigate();
   const [cartItemCount, setCartItemCount] = useState(0);
+  const [search, setSearch] = useState(""); // State for search query
 
   useEffect(() => {
     async function fetchCartItemCount() {
@@ -48,6 +50,19 @@ export function Header() {
     };
   }, [user?.id]);
 
+  async function handleSearch(query: string) {
+    setSearch(query);
+    try {
+      const filteredDishes = await DishesService.getFilteredDishes(query);
+      // Dispatch a custom event with the filtered dishes
+      window.dispatchEvent(
+        new CustomEvent("dishesFiltered", { detail: filteredDishes })
+      );
+    } catch (error) {
+      console.error("Erro ao buscar pratos:", error);
+    }
+  }
+
   function handleButtonClick() {
     if (user?.is_admin) {
       navigate("/new");
@@ -77,7 +92,12 @@ export function Header() {
         />
       </Logo>
 
-      <Input icon={BiSearch} placeholder="Busque por pratos ou ingredientes" />
+      <Input
+        icon={BiSearch}
+        placeholder="Busque por pratos ou ingredientes"
+        value={search}
+        onChange={(e) => handleSearch(e.target.value)} // Call handleSearch on input change
+      />
 
       <ButtonContainer>
         <InputButton>

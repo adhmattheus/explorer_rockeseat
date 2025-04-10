@@ -6,7 +6,20 @@ import { Footer } from "../../components/Footer";
 import { Header } from "../../components/Header";
 import { useAuth } from "../../hooks/auth";
 import { Order, OrdersService } from "../../services/ordersService";
-import { Container, OrderItem, OrderList } from "./styles";
+import { Container, FinalizeButton, OrderItem, OrderList } from "./styles";
+
+function mapPaymentMethod(method: string): string {
+  switch (method) {
+    case "credit_card":
+      return "Cartão de Crédito";
+    case "pix":
+      return "PIX";
+    case "cash":
+      return "Dinheiro";
+    default:
+      return "Método desconhecido";
+  }
+}
 
 export function Orders() {
   const [orders, setOrders] = useState<Order[]>([]);
@@ -30,6 +43,21 @@ export function Orders() {
     fetchOrders();
   }, []);
 
+  async function handleFinalizeOrder(orderId: number) {
+    try {
+      await OrdersService.updateOrderStatus(orderId, "done");
+      alert("Pedido finalizado com sucesso!");
+      setOrders((prevOrders) =>
+        prevOrders.map((order) =>
+          order.id === orderId ? { ...order, status: "done" } : order
+        )
+      );
+    } catch (error) {
+      console.error("Erro ao finalizar pedido:", error);
+      alert("Erro ao finalizar pedido.");
+    }
+  }
+
   return (
     <Container>
       <Header />
@@ -52,13 +80,13 @@ export function Orders() {
             {orders.map((order) => (
               <OrderItem key={order.id}>
                 <p>
-                  <strong>Status:</strong> {order.status}
+                  <strong>Status:</strong> {order.status === "open" ? "Aberto" : "Pronto"}
                 </p>
                 <p>
                   <strong>Preço:</strong> R$ {order.price.toLocaleString("pt-BR", { minimumFractionDigits: 2 })}
                 </p>
                 <p>
-                  <strong>Método de Pagamento:</strong> {order.payment_method}
+                  <strong>Método de Pagamento:</strong> {mapPaymentMethod(order.payment_method)}
                 </p>
 
                 {user?.is_admin ? (
@@ -73,11 +101,17 @@ export function Orders() {
                 <ul>
                   {order.dishes.map((item, index) => (
                     <li key={index}>
-                      <strong>Nome:</strong> {item.name}, <br>
-                      </br><strong>Quantidade:</strong> {item.quantity}
+                      <strong>Nome:</strong> {item.name}, <br />
+                      <strong>Quantidade:</strong> {item.quantity}
                     </li>
                   ))}
                 </ul>
+                {user?.is_admin === 1 && order.status === "open" && (
+                  <FinalizeButton onClick={() => handleFinalizeOrder(order.id)}>
+                    Finalizar pedido
+                  </FinalizeButton>
+                )}
+
               </OrderItem>
             ))}
           </OrderList>

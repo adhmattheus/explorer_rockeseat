@@ -59,4 +59,18 @@ export class OrdersService {
       throw error;
     }
   }
+
+  static async updateOrderStatus(id: number, status: string): Promise<void> {
+    try {
+      const validStatuses = ["open", "done"];
+      if (!validStatuses.includes(status)) {
+        throw new Error("Status inválido.");
+      }
+
+      await api.patch(`/orders/${id}`, { status });
+    } catch (error) {
+      console.error("Erro ao atualizar status do pedido:", error);
+      throw error;
+    }
+  }
 }
