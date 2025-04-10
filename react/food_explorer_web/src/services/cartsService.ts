@@ -52,4 +52,14 @@ export class CartsService {
       throw error;
     }
   }
+
+  static async updateCart(id: number, cartItems: CartItem[]): Promise<void> {
+    try {
+      const payload = { cart_items: cartItems };
+      await api.patch(`/carts/${id}`, payload);
+    } catch (error) {
+      console.error("Erro ao atualizar carrinho:", error);
+      throw error;
+    }
+  }
 }

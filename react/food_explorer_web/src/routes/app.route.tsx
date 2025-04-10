@@ -1,6 +1,7 @@
 import { Navigate, Route, Routes } from "react-router-dom";
 import { PrivateRoute } from "./PrivateRoute";
 
+import { Cart } from "../pages/cart";
 import { Detail } from "../pages/dish/detail";
 import { NewDish } from "../pages/dish/new";
 import Home from "../pages/home";
@@ -20,6 +21,7 @@ export function AppRoutes() {
         <Route path="/new/:id?" element={<NewDish />} />
         <Route path="/users" element={<Users />} />
         <Route path="/orders" element={<Orders />} />
+        <Route path="/cart" element={<Cart />} />
       </Route>
       <Route path="*" element={<Navigate to="/" />} />
     </Routes>

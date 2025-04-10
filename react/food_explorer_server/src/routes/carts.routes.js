@@ -21,7 +21,7 @@ cartsRoutes.use(ensureAuthenticated);
  *       200:
  *         description: Lista de carrinhos
  *   post:
- *     summary: Adiciona ou atualiza itens no carrinho do usuário
+ *     summary: Cria ou adiciona itens ao carrinho do usuário
  *     tags: [Carts]
  *     security:
  *       - bearerAuth: []
@@ -45,7 +45,7 @@ cartsRoutes.use(ensureAuthenticated);
  *                       type: integer
  *     responses:
  *       201:
- *         description: Itens adicionados ou atualizados no carrinho com sucesso
+ *         description: Carrinho criado ou atualizado com sucesso
  * /carts/{id}:
  *   get:
  *     summary: Exibe detalhes de um carrinho
@@ -61,6 +61,38 @@ cartsRoutes.use(ensureAuthenticated);
  *     responses:
  *       200:
  *         description: Detalhes do carrinho
+ *   patch:
+ *     summary: Atualiza itens no carrinho
+ *     tags: [Carts]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               cart_items:
+ *                 type: array
+ *                 items:
+ *                   type: object
+ *                   properties:
+ *                     dish_id:
+ *                       type: integer
+ *                     name:
+ *                       type: string
+ *                     quantity:
+ *                       type: integer
+ *     responses:
+ *       200:
+ *         description: Carrinho atualizado com sucesso
  *   delete:
  *     summary: Exclui um carrinho
  *     tags: [Carts]
@@ -79,6 +111,7 @@ cartsRoutes.use(ensureAuthenticated);
 cartsRoutes.get("/", cartsController.index);
 cartsRoutes.post("/", cartsController.create);
 cartsRoutes.get("/:id", cartsController.show);
+cartsRoutes.patch("/:id", cartsController.update);
 cartsRoutes.delete("/:id", cartsController.delete);
 
 module.exports = cartsRoutes;
